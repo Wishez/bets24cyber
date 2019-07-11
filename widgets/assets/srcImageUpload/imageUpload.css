@@ -1,0 +1,6 @@
+.img-upl img.upload-image {
+  cursor: pointer;
+}
+.img-upl .img-upl-modal {
+  display: none;
+}

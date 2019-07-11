@@ -1,0 +1,59 @@
+.transactionsGrid	
+  display: grid
+  grid-template-areas: "date action status sum commission rest"
+  grid-template-columns: 80px 130px 118px  99px 112px 111px
+  grid-column-gap: 12px
+
+  &_rows
+
+    @include breakpoint($tablet-less)
+      grid-auto-rows: 52.5px 
+
+  &_columns
+
+  @include breakpoint($tablet-less)
+    grid-template-columns: repeat(3, 1fr)
+    grid-template-areas: "date action status" "sum commission rest"
+    text-align: left
+    grid-column-gap: 1.5em
+
+  @include breakpoint($phone-less)
+    grid-template-areas: "action action action" "date date status" "sum commission rest"    
+  
+  &Action, &Date
+    text-align: left
+
+  &Date
+    grid-area: date
+
+  &Action
+    grid-area: action
+
+    @include breakpoint($tablet)
+      padding-left: 1.1rem
+
+    @include breakpoint($phone-less)
+      text-align: center
+      
+  &Status
+    grid-area: status
+
+    @include breakpoint($tablet-less)
+      text-align: center
+      
+    @include breakpoint($phone-less)
+      text-align: left
+
+  &Sum, &Commission, &Rest
+
+    @include breakpoint($tablet-less)
+      text-align: right
+
+  &Sum
+    grid-area: sum
+
+  &Commission
+    grid-area: commission
+
+  &Rest
+    grid-area: rest

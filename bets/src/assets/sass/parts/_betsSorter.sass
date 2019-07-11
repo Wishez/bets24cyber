@@ -1,0 +1,91 @@
+.timeRageSorter
+  margin-left: em(12, 12)
+
+
+.sorterSection
+  @include breakpoint($tablet-less)
+    max-width: 50%
+    min-width: 45%
+
+  // Порядок важен
+  &_search
+    @include breakpoint($tablet-less)
+        min-width: 52%
+    
+  @include breakpoint($phone-less)
+    min-width: 100%
+  
+    min-height: em(37, 12)
+  
+  &_styled
+    border-radius: 25px
+    background-color: #f4f3f3
+
+.searchSorter
+  padding-left: em(21, 12)
+
+  @include breakpoint($phone-less)
+    padding-left: 0
+
+  &__label
+    top: em(8)
+    left: em(21)
+    font-size: em(16, 12)
+
+    @include breakpoint($phone-less)
+      left: em(5, 12)
+      top: em(5, 12)
+
+  &__input
+    text-indent: 25px
+    border-bottom: 1px solid $gray
+    @include breakpoint($phone-less)
+      text-indent: 35px
+[name="betsSorterUntilDate"]
+
+  @include breakpoint($betsTabletLess)
+      transform: translateX(7px)
+  @include breakpoint($phone-less)
+      transform: none
+
+.betsSorter
+    display: grid
+    @include breakpoint($phone)
+      grid-template-columns: repeat(2, minmax(320px, 50%))
+    @include breakpoint($desktop)
+      grid-template-columns: 331px 172px 125px 276px
+    // grid-template-rows: repeat(6, 1fr)
+    @include breakpoint($tablet)
+        grid-auto-rows: 39px
+
+    @include breakpoint($tablet-less)
+        grid-auto-rows: auto
+        display: flex
+        flex-flow: row wrap
+        justify-content: space-between
+        padding-left:  1.5em
+        padding-right:  1.5em
+
+    grid-gap: 1rem em(32, 12)
+    padding: em(48, 12) em(70, 12) em(20, 12)
+
+    & > *
+      object-fit: cover
+
+    [type="radio"]
+        white-space: nowrap
+        overflow: hidden
+        clip: rect(1px, 1px, 1px, 1px)
+        width: 1px
+        height: 1px
+        position: absolute
+
+
+    &__label
+        margin-top: 3px
+        height: 85%
+        display: inline-block
+        line-height: 2.5
+        min-width: 33%
+        transition: .3s $sharp
+

@@ -1,0 +1,25 @@
+.litter.litter
+  margin-top: 5vh
+  margin-bottom: 4em
+  width: 100%
+
+  @include breakpoint($tablet-less)
+    margin-bottom: 10em
+
+  &_normal
+    max-width: em(685)
+
+  &_small
+    max-width: em(575)
+
+  &, & > *:not([class*="close"])
+
+      @include breakpoint($tablet-less)
+          max-width: 90vw
+          min-width: 85vw
+
+.personalRoomLitter
+  @include breakpoint($betsTabletLess)
+    flex-wrap: wrap
+    min-width: 90vw $i
+    max-width: 90vw $i

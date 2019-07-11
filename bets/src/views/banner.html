@@ -1,0 +1,21 @@
+<!-- begin banner -->
+<aside class="banner relative" id="banner">
+    <lazy-image :is-image-fill-container="true" :src="banner" absolute="">
+    </lazy-image>
+    <article class="container h-between v-centered height_fill parent row wrap h-centered_tablet">
+        <section class="parent column banner__section h-centered_tablet">
+            <h1 class="font-weight_bold banner__title color_white  margin-top_zero line-height_4">
+                ESX &mdash; это биржа ставок на киберспорт
+            </h1>
+    
+            <p class="font-weight_semibold margin-top_base banner__paragraph color_white  line-height_4">
+                Установи свои правила игры: создавай свои ставки с коэффициентами, которые подходят тебе.
+            </p>
+        </section>
+
+        <base-button :action="openRegistrationForm" class-name="banner__button font-weight_semibold" modifier="blue">
+            Сделать ставку
+        </base-button>
+    </article>
+</aside>
+<!-- end banner -->

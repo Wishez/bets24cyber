@@ -1,0 +1,9 @@
+export const csgo = require("./cs.png");
+export const dota = require("./dota.png");
+export const previous = require("./previous.png");
+export const cancel = require("./cancel.png");
+export const hs = require("./hs.png");
+export const lol = require("./lol.png");
+export const ow = require("./ow.png");
+export const user = require("./user.svg");
+export const cup = require("./cup.png");

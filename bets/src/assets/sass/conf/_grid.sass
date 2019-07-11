@@ -1,0 +1,155 @@
+$i: !important
+.grow	
+	flex-grow: 1
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			flex-grow: 1
+
+.fullWidth
+	min-width: 100%
+
+.notRestAlone:nth-last-child(2):nth-child(4n)
+	min-width: 66%
+
+.halfWidth
+	min-width: 50%
+	
+.parent 
+	display: flex
+
+	&_inline
+		display: inline-flex
+
+	&_force
+		display: flex $i
+
+
+.row
+	flex-direction: row
+	
+	&_reverse
+
+		&-phone
+
+			@include breakpoint($phone-less)
+				flex-direction: row-reverse
+
+.wrap
+	flex-wrap: wrap
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			flex-wrap: wrap
+
+.nowrap
+	flex-wrap: nowrap
+
+.column
+	flex-direction:  column 
+
+.baseChild 
+	flex: 1 0 15%
+
+.h-around
+	justify-content: space-around
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			justify-content: space-around
+
+.h-between
+	justify-content: space-between
+
+.h-start
+	justify-content: flex-start
+
+.h-end
+	justify-content: flex-end
+	
+	&_tablet
+		@include breakpoint($tablet-less)
+			justify-content: flex-end
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			justify-content: flex-end
+
+
+.h-centered
+	justify-content: center
+
+	&_tablet
+
+		@include breakpoint($tablet-less)
+			justify-content: center
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			justify-content: center
+
+.h-s-end
+	justify-self: flex-end
+
+.h-s-start
+	justify-self: flex-start
+
+.h-s-centered
+	justify-self: center
+
+.v-centered
+	align-items: center
+	
+	&_tablet
+
+		@include breakpoint($tablet-less)
+			align-items: center
+			
+	&_phone
+
+		@include breakpoint($phone-less)
+			align-items: center
+
+.v-start
+	align-items: flex-start
+
+.v-end
+	align-items: flex-end
+	
+
+
+.v-s-end
+	align-self: flex-end
+
+.v-s-start
+	align-self: flex-start
+
+.v-s-centered
+	align-self: center
+
+.centered 
+	justify-content: center
+	align-items: center
+
+	&_tablet
+
+		@include breakpoint($tablet-less)
+			justify-content: center
+			align-items: center
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			justify-content: center
+			align-items: center
+.row
+
+	&_phone
+
+		@include breakpoint($phone-less)
+			flex-direction: row

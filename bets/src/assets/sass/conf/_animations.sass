@@ -1,0 +1,66 @@
+.fadeTranslateToTop
+	&-enter, &-leave-to
+		opacity: 0
+		transform: translateY(1.5rem)
+
+	&-enter-active
+		transition-timing-function: $decelleration
+
+	&-leave-active
+  	transition-timing-function: $acceleration
+
+	&-enter-active, &-leave-active
+		transition-property: opacity, transform
+		transition-duration: .2s
+		transform: translateY(0)
+  	will-change: opacity, transform
+
+	&-enter, &-leave-to
+		transform: translateY(1.5rem)
+		opacity: 0
+
+.fadeTranslateToBottom
+	&-enter-active
+		transition-timing-function: $decelleration
+
+	&-leave-active
+  	transition-timing-function: $acceleration
+
+	&-enter-active, &-leave-active
+		transition-property: opacity, transform
+		transition-duration: .2s
+		transform: translateY(0)
+  	will-change: opacity, transform
+
+	&-enter, &-leave-to
+		transition-duration: .2s
+		transform: translateY(-1.5rem)
+		opacity: 0
+
+.fading
+
+	&-enter-active
+		transition-timing-function: $decelleration
+	&-leave-active
+  	transition-timing-function: $acceleration
+
+	&-enter-active, &-leave-active
+		transition-property: opacity
+		transition-duration: .2s
+  	will-change: opacity
+
+	&-enter, &-leave-to
+		opacity: 0
+		will-change: opacity
+
+.switchFading
+	&-enter-active, &-leave-active
+  		will-change: opacity
+	&-enter-active
+		transition: opacity 270ms $decelleration
+	&-leave-active, &-leave-to
+		display: none
+  		// transition: opacity .2s $acceleration
+	&-enter, &-leave-to
+		opacity: 0
+		will-change: opacity

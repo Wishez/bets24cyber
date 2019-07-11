@@ -1,0 +1,1039 @@
+<!-- begin popup -->
+<div class="display_contents" id="matchPopup" v-if="$store.state.popups[matchPopupName]">
+  <modal-container :is-shown="$store.state.popups[matchPopupName]" :is-data-updated="$store.getters['popups/isMatchDataUpdated']"
+    :on-close-modal="closeMatchPopup" :on-open="() => {
+        const requstMethod = 'post';
+        const requestUrl = $store.state.bets.choosenMatchUrl;
+        const requestHeaders = {
+          'X-CSRF-Token': $store.state.csrftoken
+        };
+        const requestOptions = {
+          url: requestUrl,
+          data: {},
+          method: requstMethod,
+          headers: requestHeaders
+        };
+
+        // https://github.com/axios/axios
+        // const request = axios(requestOptions);
+
+        const request = window.Promise.resolve({
+          status: 'ok',
+          // html должен содержать <modal-container> с его содержимым.
+          staticTemplate: $store.state.document.getElementById('matchPopupSample').innerHTML
+        });
+
+        // Тестовая задержка.
+        window.setTimeout(() => {
+          request.then((response) => {
+            log(response);
+            const generatedHtml = response.staticTemplate;
+
+            renderStaticTemplate(generatedHtml);
+
+            function renderStaticTemplate(html) {
+              const matchPopup = $store.state.document.getElementById('matchPopup');
+
+              matchPopup.innerHTML = html;
+
+              setInitedStateOfPopup();
+              rerenderMatchPopup();
+            }
+          }); // end request
+
+        }, 500);
+      }" class-name="modalMatchContainer">
+    <transition name='fading'>
+      <article v-if="$store.getters['popups/isMatchDataUpdated']" class="popupMatch">
+        <bets-match-popup-header league-name="The Super League Name" league-stage="Signification" match-date="03/05/2018 9:00">
+
+          <match-teams :left-team-ratio="1.3" :right-team-ratio="1.1" :match-url="$store.state.bets.choosenMatchUrl" :last-ratio-values="{
+                    left: -1,
+                    right: -1
+                  }" left-team-name="Wings Gaming" left-team-logo="/images/logos/wings.png" left-team-country="/images/flags/ch.png"
+            right-team-name="Team Liquid" right-team-logo="/images/logos/teamliquid.png" right-team-country="/images/flags/eu.png"
+            class-name="popupMatchTeams padding-bottom_base" team-name-class="text_centered-phone-force" team-logo-container-class="display_grid popupMatchLogos"
+            team-logo-class="max-width_40 parent centered" ratio-container-class="max-width_28" versus-class="popupTeamsVersus"
+            left-team-name-class="margin-top_small-tabletLess" right-team-class="popupRightTeam popupTeam translate-left_small-xsUp"
+            left-team-class="popupLeftTeam popupTeam" series="Best of 2" names-beneath-logo is-big-versus is-small-ratio></match-teams>
+
+          <match-streams :channels="[ { lang: 'ru', name: 'nuke73' }, { lang: 'en', name: 'food' }, { lang: 'ru', name: 'welovegames' }, { lang: 'ru',
+          name: 'c_a_k_e' } ]" :languages="[ { name: 'RU', image: '/images/flags/ru.png' }, { name: 'EN', image: '/images/flags/eu.png'
+          }]" class-name="popupMatchStreams"></match-streams>
+        </bets-match-popup-header>
+
+        <!-- Декоративные метки -->
+        <bets-match-popup-labels></bets-match-popup-labels>
+        <!-- Конец декоративным меткам -->
+
+        <!-- begin matchStatus -->
+        <div class="matchStatus background-color_white">
+          <!-- Заголовки таблицы -->
+          <bets-match-popup-bets-header></bets-match-popup-bets-header>
+          <!-- Конец заголовкам -->
+          <team-status-bar opposite-team-name="Wings Gaming" team-name="Team Liquid" team-status="Победа" team-logo="/images/logos/teamliquid.png"
+            :bets="[
+                {
+                  bet: {
+                    id: 1
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.4,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 2
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.618,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 3
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                }
+              ]" @accept-user-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+          <team-status-bar opposite-team-name="Team Liquid" team-name="Wings Gaming" team-status="Поражение" team-logo="/images/logos/wings.png"
+            :bets="[
+                {
+                  bet: {
+                    id: 7
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.1,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 8
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 9
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.3,
+                    win: ''
+                  }
+                }
+              ]" @accept-user-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+
+          <team-status-bar :opposite-team-name="''" :team-name="''" team-status="Ничья" :team-logo="''" :bets="[
+                {
+                  bet: {
+                    id: 404
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 505
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 400
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1,
+                    win: ''
+                  }
+                }
+              ]" @accept-user-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+        </div>
+        <!-- end matchStatus -->
+      </article>
+      <!-- end meta -->
+      <icon-preloader v-else class="min-height_offset"></icon-preloader>
+    </transition>
+  </modal-container>
+</div>
+
+
+<div id="matchPopupSample" hidden>
+  <modal-container :is-shown="$store.state.popups[matchPopupName]" :is-data-updated="$store.getters['popups/isMatchDataUpdated']"
+    :on-close-modal="closeMatchPopup" :on-open="() => {
+        const requstMethod = 'post';
+        const requestUrl = $store.state.bets.choosenMatchUrl;
+        const requestHeaders = {
+          'X-CSRF-Token': $store.state.csrftoken
+        };
+        const requestOptions = {
+          url: requestUrl,
+          data: {},
+          method: requstMethod,
+          headers: requestHeaders
+        };
+
+        // https://github.com/axios/axios
+        // const request = axios(requestOptions);
+
+        const request = window.Promise.resolve({
+          status: 'ok',
+          // html должен содержать <modal-container> с его содержимым.
+          staticTemplate: $store.state.document.getElementById('matchPopupSample').innerHTML
+        });
+
+        // Тестовая задержка.
+        window.setTimeout(() => {
+          request.then((response) => {
+            log(response);
+            const generatedHtml = response.staticTemplate;
+
+            renderStaticTemplate(generatedHtml);
+
+            function renderStaticTemplate(html) {
+              const matchPopup = $store.state.document.getElementById('matchPopup');
+
+              matchPopup.innerHTML = html;
+
+              setInitedStateOfPopup();
+              rerenderMatchPopup();
+            }
+          }); // end request
+
+        }, 500);
+      }" class-name="modalMatchContainer">
+    <transition name='fading'>
+      <article v-if="$store.getters['popups/isMatchDataUpdated']" class="popupMatch">
+        <bets-match-popup-header league-name="The Super League Name" league-stage="Signification" match-date="03/05/2018 9:00">
+
+          <match-teams :left-team-ratio="1.3" :right-team-ratio="1.1" :match-url="$store.state.bets.choosenMatchUrl" :last-ratio-values="{
+                    left: -1,
+                    right: -1
+                  }" :is-completed="true" :match-score="{
+                    left: 2,
+                    right: 0
+                  }" left-team-name="Wings Gaming" left-team-logo="/images/logos/wings.png" left-team-country="/images/flags/ch.png"
+            right-team-name="Team Liquid" right-team-logo="/images/logos/teamliquid.png" right-team-country="/images/flags/eu.png"
+            class-name="popupMatchTeams padding-bottom_base" team-name-class="text_centered-phone-force" team-logo-container-class="display_grid popupMatchLogos"
+            team-logo-class="max-width_40 parent centered" ratio-container-class="max-width_28" versus-class="popupTeamsVersus"
+            left-team-name-class="margin-top_small-tabletLess" right-team-class="popupRightTeam popupTeam translate-left_small-xsUp"
+            left-team-class="popupLeftTeam popupTeam" series="Best of 2" names-beneath-logo is-big-versus is-small-ratio></match-teams>
+
+          <match-streams :channels="[
+                   { lang: 'ru', name: 'nuke73' },
+                   { lang: 'en', name: 'food' },
+                   { lang: 'ru', name: 'welovegames' },
+                   { lang: 'ru', name: 'c_a_k_e' }
+                ]" :languages="[
+                  { 
+                    name: 'RU', 
+                    image: '/images/flags/ru.png' 
+                  },
+                  {
+                    name: 'EN',
+                    image: '/images/flags/eu.png'
+                  }
+                ]" class-name="popupMatchStreams"></match-streams>
+        </bets-match-popup-header>
+
+        <!-- Декоративные метки -->
+        <bets-match-popup-labels></bets-match-popup-labels>
+        <!-- Конец декоративным меткам -->
+
+        <!-- begin matchStatus -->
+        <div class="matchStatus background-color_white">
+          <!-- Заголовки таблицы -->
+          <bets-match-popup-bets-header></bets-match-popup-bets-header>
+          <!-- Конец заголовкам -->
+          <team-status-bar opposite-team-name="Wings Gaming" team-name="Team Liquid" team-status="Победа" team-logo="/images/logos/teamliquid.png"
+            :bets="[
+                {
+                  bet: {
+                    id: 1
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5545,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.454,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 2
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4544,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.618,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 3
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 1
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5545,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.454,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 2
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4544,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.618,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 3
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 1
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5545,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.454,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 2
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4544,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.618,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 3
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 1
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5545,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.454,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 2
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4544,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.618,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 3
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                }
+              ]" @accept-user-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+          <team-status-bar opposite-team-name="Team Liquid" team-name="Wings Gaming" team-status="Поражение" team-logo="/images/logos/wings.png"
+            :bets="[
+                {
+                  bet: {
+                    id: 7
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1.1,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 8
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1.2,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 9
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1.3,
+                    win: ''
+                  }
+                }
+              ]" @accept-user-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+
+          <team-status-bar :opposite-team-name="''" :team-name="''" team-status="Ничья" :team-logo="''" :bets="[
+                {
+                  bet: {
+                    id: 404
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3.5,
+                    win: 350
+                  },
+                  accepted: {
+                    bet: 350,
+                    ratio: 1,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 505
+                  },
+                  offered: {
+                    bet: 200,
+                    ratio: 3.4,
+                    win: 680
+                  },
+                  accepted: {
+                    bet: 680,
+                    ratio: 1,
+                    win: ''
+                  }
+                },
+                {
+                  bet: {
+                    id: 400
+                  },
+                  offered: {
+                    bet: 100,
+                    ratio: 3,
+                    win: 300
+                  },
+                  accepted: {
+                    bet: 300,
+                    ratio: 1,
+                    win: ''
+                  }
+                }
+              ]" @accept-user-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      isAuthorizationBlock: true,
+                      isActionsBlock: true
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+        </div>
+        <!-- end matchStatus -->
+      </article>
+      <!-- end meta -->
+      <icon-preloader v-else class="min-height_offset"></icon-preloader>
+    </transition>
+  </modal-container>
+</div>

@@ -1,0 +1,967 @@
+@import './lib/normalize'
+@import './conf/index'
+@import '~tiny-slider/src/tiny-slider'
+@import './parts/icons'
+
+.borderBox
+	box-sizing: border-box
+
+.text
+
+	&_upper
+		text-transform: uppercase
+
+	&_nowrap
+		white-space: nowrap
+
+	&_right
+		text-align: right
+
+		&-tablet
+
+			@include breakpoint($tablet-less)
+				text-align: right
+
+		&-phone
+
+			@include breakpoint($phone-less)
+				text-align: right
+
+	&_left
+
+		text-align: left
+
+		&-phone
+			@include breakpoint($phone-less)
+				text-align: left
+	&-indent
+		&_10
+			text-indent: 10px
+			&-inverse
+				text-indent: -10px
+		&_20
+			text-indent: 20px
+		&_zero
+			&-tablet
+				@include breakpoint($tablet-less)
+					text-indent: 0
+	&_centered
+		text-align: center
+
+		&-phone
+			&-force
+				@include breakpoint($phone-less)
+					text-align: center $i
+			@include breakpoint($phone-less)
+				text-align: center
+.opacity
+
+	&_half
+		opacity: .5
+
+	&_full
+		opacity: 1
+
+	&_zero
+		opacity: 0
+
+	&_trasition-sharp
+		will-change: opacity
+		transition: opacity .3s $sharp
+
+
+
+.order
+	&_first
+		order: -1
+	&_last
+		order: 10
+
+.overflow
+
+	&-y_auto
+		overflow-y: auto
+
+	&_hidden
+		overflow: hidden
+
+.index
+
+	&_negative
+		z-index: -1
+
+	&_positive
+		z-index: 1
+
+	&_big
+		z-index: 10
+
+.line-height
+	&_3
+		line-height: 1.3
+	&_4
+		line-height: 1.4
+
+.font
+
+	&-family
+
+		&_decorative
+			font-family: $decorativeFont
+
+		&_main
+			font-family: $mainFont
+
+	&-size
+
+		&_base
+			font-size: 1em
+
+		&_10
+			font-size: em(10)
+
+		&_11
+			font-size: 11px
+
+		&_12
+			font-size: $s12
+
+		&_14
+			font-size: $s14
+		&_18
+			font-size: em(18)
+
+		&_20
+			font-size: em(20)
+
+		&_22
+			font-size: $s22
+
+		&_26
+			font-size: $s26
+
+		&_25
+			font-size: $s25
+
+		&_18
+			font-size: $s18
+
+		&_16
+			font-size: $s16
+		
+		&_30
+			font-size: em(30)
+
+	&-style
+		&_italic
+			font-style: italic
+
+	&-weight
+
+		&_extrabold
+			font-weight: 700
+
+		&_bold
+			font-weight: bold
+
+		&_semibold
+			font-weight: 600
+
+		&_normal
+			font-weight: normal
+
+		&_light
+			font-weight: 200
+
+.position
+
+	&_base
+		top: 0
+		left: 0
+
+	&-top_full
+		top: 100%
+
+	&-bottom_full
+		bottom: 100%
+
+		&-offset
+			bottom: calc(100% + .61804697156983930779rem)
+
+	&_right
+		right: 0
+		left: auto
+
+		&-phone
+			@include breakpoint($phone-less)
+				right: 0
+				left: auto
+
+	&_centered
+		left: -50%
+
+		&-phone
+			@include breakpoint($phone-less)
+				left: -50%
+
+.pointer
+	cursor: pointer
+
+.relative
+	position: relative
+
+.absolute
+	position: absolute
+
+	&_force
+		position: absolute $i
+
+.fixed
+	position: fixed
+
+.sticky
+	position: sticky
+
+.croped
+
+	&_text
+		overflow: hidden
+		text-overflow: ellipsis
+		display: flex
+		display: -webkit-box
+		-webkit-box-orient: vertical
+
+		&_6
+			-webkit-line-clamp: 6
+			height: (6px * 1.5 * 16)
+
+	&_line
+		white-space: nowrap
+		text-overflow: ellipsis
+		overflow: hidden
+
+.color
+
+	&_darkGray
+		color: $darkGray
+
+	&_blue
+		color: $blue
+
+	&_white
+		color: $white
+
+	&_darkBlue
+		color: $darkBlue
+
+	&_paleGray
+		color: rgba(85, 85, 85, 0.5)
+
+	&_paleBlue
+		color: #5f6674
+
+	&_gray
+		color: $gray
+
+	// &_green
+	// 	color: $green
+
+	&_paleBlue
+		color: rgba(#484f60, .7)
+
+	&_green
+		color: #0ba163
+
+	&_red
+		color: #DF1910
+
+	&_yellow
+		color: #E9DF70
+
+.fitBlock
+	// display: block
+	width: 100%
+	height: 100%
+
+.background-color
+
+	&_lightGray
+  		background-color: $lightGray
+
+	&_darkGray
+		background-color: $darkGray
+
+	&_blue
+		background-color: $blue
+
+	&_white
+		background-color: $white
+
+	&_darkBlue
+		background-color: $darkBlue
+
+	&_blueGradient
+		background: $buttonGradient
+
+	&_null
+		background-color: transparent
+
+.max-width
+
+	&_auto-desktop
+	    @include breakpoint($desktop)
+	      max-width: none $i
+
+.max-height
+
+	&_auto
+
+		&-xs
+			@include breakpoint($xs)
+				max-height: auto
+
+	&_126
+		max-height: 126px
+
+.min-height
+
+	&_offset
+		min-height: 325px
+.width
+
+	&_fill
+
+		&-tablet
+		    @include breakpoint($tablet-less)
+		    	min-width: 100%
+
+		&-phone
+	    	@include breakpoint($phone-less)
+	      		min-width: 100%
+
+
+	&_fill
+		min-width: 100%
+	&_auto
+		width: auto
+
+.padding
+
+	&_horizontal
+		padding-left: 1.5rem
+		padding-right: 1.5rem
+
+		&-tablet
+			@include breakpoint($tablet-less)
+			    padding-left: 1.75rem
+			    padding-right: 1.25rem
+
+	&_vertical
+		padding-top: 1em
+		padding-bottom: 2em
+
+	&_container
+		padding: 1.5rem 1rem  2rem 2.25rem
+
+	&_small-container
+		padding: 1em 1.25em 2em .75em
+
+	&-right
+
+		&_base
+			padding-right: 1em
+
+	&-left
+
+		&_half-quarter
+			padding-left: .75em
+
+		&_base
+			padding-left: 1em
+
+		&_large
+			padding-left: 2em
+			&-rem
+  				padding-left: 2rem
+		&_zero
+
+			&-tablet
+
+				@include breakpoint($tablet-less)
+					padding-left: 0
+
+			&-phone
+
+				@include breakpoint($phone-less)
+					padding-left: 0
+
+	&-bottom
+
+
+		&_small
+			padding-bottom: .5em
+
+			&-quarter
+
+				&-tablet
+
+					@include breakpoint($tablet-less)
+						padding-bottom: .75em
+
+			&-tablet
+
+				@include breakpoint($tablet-less)
+					padding-bottom: .5em
+
+			&-phone
+
+				@include breakpoint($phone-less)
+					padding-bottom: .5em
+
+		&_base
+			padding-bottom: 1em
+
+			&-tablet
+
+				@include breakpoint($tablet-less)
+					padding-bottom: 1em
+
+			&-phone
+
+				&-rem
+
+					@include breakpoint($phone-less)
+						padding-bottom: 1rem
+
+		&_increased
+
+			&-tablet
+
+				@include breakpoint($tablet-less)
+					padding-bottom: 1.5em
+
+			&-tabletLess
+
+				@include breakpoint($betsTabletLess)
+					padding-bottom: 1.5em
+		&_large
+			padding-bottom: 2em
+
+			&-tablet
+
+				@include breakpoint($tablet-less)
+					padding-bottom: 2em
+
+			&-phone
+
+				@include breakpoint($phone-less)
+					padding-bottom: 2em
+
+		&_5
+			padding-bottom: em(5)
+
+	&-top
+
+
+		&_quarter
+			padding-top: .25em
+
+		&_small
+			padding-top: .5em
+
+			&-tablet
+
+					@include breakpoint($tablet-less)
+						padding-top: .5em
+
+			&-rem
+				padding-top: .5rem
+
+
+
+		&_base
+			padding-top: 1em
+
+
+
+		&_large
+			padding-top: 2em
+
+		&_5
+			padding-bottom: em(5)
+
+.headingOffset
+	margin-left: -3px
+	&_tablet
+		@include breakpoint($tablet)
+			margin-left: -5px
+.container
+	max-width: #{$containerWidth}px
+	margin-left: auto
+	margin-right: auto
+	@include breakpoint(max-width em($containerWidth))
+		padding-left: 1em
+		padding-right: 1em
+.responsiveBackground
+	background: center top no-repeat
+	background-size: cover
+
+.visible-hidden
+	white-space: nowrap
+	overflow: hidden
+	clip: rect(1px, 1px, 1px, 1px)
+	width: 1px
+	height: 1px
+	position: absolute
+	&_tabletLess
+		@include breakpoint($tablet-less)
+			white-space: nowrap
+			overflow: hidden
+			clip: rect(1px, 1px, 1px, 1px)
+			width: 1px
+			height: 1px
+			position: absolute
+	&_phoneLess
+		@include breakpoint($phone-less)
+			white-space: nowrap
+			overflow: hidden
+			clip: rect(1px, 1px, 1px, 1px)
+			width: 1px
+			height: 1px
+			position: absolute
+
+
+.grid
+	&-rows
+		&_fill
+			grid-template-columns: 100%
+
+.max-width
+	&_85
+		max-width: em(85, 12)
+
+	&_45
+		max-width: em(45, 12)
+
+	&_40
+		max-width: em(40, 12) $i
+
+	&_20
+		max-width: em(20, 12) $i
+
+	&_28
+		max-width: em(28, 9) $i
+
+.max-height
+	&_28
+		max-height: em(28, 12)
+		min-height: em(28, 12)
+
+	&_40
+		max-height: em(30, 12)
+		min-height: em(30, 12)
+
+.display
+	&_block
+		display: block
+	&_inline-block
+		display: inline-block
+	&_contents
+		display: contents
+	&_none
+		display: none
+		&-tablet
+			@include breakpoint($tablet-less)
+				display: none
+	&_grid
+		display: grid
+	&_flex
+		&-tablet
+			@include breakpoint($tablet-less)
+				display: flex
+.circle
+	border-radius: 100%
+// Shadows
+// .iconShadow
+// 	box-shadow: 1px 1px 2px 0 $shadow
+.shadow
+
+	&_dark-block
+		box-shadow: 2px 2px 6px 0 rgba(0,0,0,.5)
+
+	&_white-block
+		box-shadow: 2px 2px 6px 0 $shadow
+
+	&_spread
+		box-shadow: 0 0 10px 0 $shadow
+
+	&_big-spread
+		box-shadow: 0 0 29px 1px rgba(0,0,0,.2)
+
+	&_litter
+		box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1)
+
+
+
+
+.after
+	&:after
+		content: ""
+	&_absolute
+		&:after
+			position: absolute
+
+.bordered
+	border-width: 1px
+	border-style: solid
+	border-radius: 5px
+	transition: background-color .2s $standart, color .2s $standart
+
+	&_blue
+		border-color: $blue
+
+	&_darkBlue
+		border-color: $darkBlue
+
+	&-bottom
+		border-bottom-style: solid
+		border-bottom-width: 1px
+
+		&_gray
+			border-bottom-color: $gray
+
+.margin
+
+	&-bottom
+
+		&_zero
+			margin-bottom: 0
+		&_quarter
+			margin-bottom: .25em
+
+		&_small
+			margin-bottom: .5em
+
+		&_small-quarter
+			margin-bottom: .75em
+
+		&_base
+			margin-bottom: 1em
+
+			&-phone
+
+				@include breakpoint($phone-less)
+					margin-bottom: 1em
+
+		&_large
+			margin-bottom: 2em
+
+		&_29
+			margin-bottom: em(29)
+
+	&-top
+
+		&_quarter
+			margin-top: .25em
+
+		&_zero
+			margin-top: 0
+
+			&-tabletLess
+				@include breakpoint($betsTabletLess)
+					margin-top: 0
+
+			&-phone
+
+				@include breakpoint($phone-less)
+					margin-top: 1em
+
+		&_small
+			margin-top: .5em
+
+			&-tabletLess
+				@include breakpoint($betsTabletLess)
+					margin-top: .5em
+
+			&-phone
+				@include breakpoint($phone-less)
+					margin-top: .5em
+
+		&_base
+			margin-top: 1em
+
+			&-tabletLess
+
+				@include breakpoint($betsTabletLess)
+					margin-top: 1em
+
+			&-phone
+
+				@include breakpoint($phone-less)
+					margin-top: 1em
+
+		&_05
+			margin-top: 0.5em
+
+		&_29
+			margin-top: em(29)
+
+		&_33
+			margin-top: em(33)
+
+
+		&_base-phone
+			@include breakpoint($phone-less)
+				margin-top: 1em
+
+		&_increased
+			margin-top: 1.5rem
+
+			&-quarter
+				margin-top: 1.75em
+			&-tabletLess
+				@include breakpoint($betsTabletLess)
+					margin-top: 1.5em
+
+
+
+
+	&-right
+
+		&_quarter
+			margin-right: .25em
+
+		&_small
+			margin-right: .5em
+
+		&_base
+			margin-right: 1em
+
+			&-tablet
+				@include breakpoint($tablet-less)
+					margin-right: 1em
+
+			&-rem
+				margin-right: 1rem
+
+		&_auto
+			margin-right: auto
+
+			&-xs
+
+				@include breakpoint($tablet-less)
+					margin-right: auto
+
+	&-left
+
+		&_large
+			margin-left: 2em
+
+		&_zero
+			&-phone
+				@include breakpoint($phone-less)
+					margin-left: 0
+
+		&_small
+			margin-left: .5em
+
+
+		&_auto
+			margin-left: auto
+
+		&_quarter
+			&-phone
+				@include breakpoint($phone-less)
+					margin-left: .25em
+
+
+	&_centered
+		margin-left: auto
+		margin-right: auto
+		&-phone
+			@include breakpoint($phone-less)
+				margin-left: auto
+				margin-right: auto
+	&_vertical
+		&-littleOffsets
+			margin-top: .2em
+			margin-bottom: .2em
+		&-base
+			&-tablet
+				@include breakpoint($tablet-less)
+					margin-top: 1em
+					margin-bottom: 1em
+			&-phone
+				@include breakpoint($phone-less)
+					margin-top: 1em
+					margin-bottom: 1em
+		&-small
+			&-tablet
+				@include breakpoint($tablet-less)
+					margin-top: .5em
+					margin-bottom: .5em
+			&-phone
+				@include breakpoint($phone-less)
+					margin-top: .5em
+					margin-bottom: .5em
+
+
+.round
+	&_slight-force
+		border-radius: 5px !important
+
+	&_slight
+		border-radius: 5px
+
+	&_25
+		border-radius: 25px
+.height
+	&_fill
+		height: 100%
+	&_auto
+
+
+.popupList
+	top: calc(100% + 0.61805em)
+	box-shadow: 2px 2px 6px 0 rgba(0, 0, 0, .25)
+	background-color: $white
+	border-radius: 3px
+	padding: 1em .75em  2em 1.25em
+	min-width: 100%
+	&_centered
+		left: -50%
+
+.section
+  // .tns-outer
+
+  .tns-inner
+    padding-left: 1em
+    padding-right: 1em
+
+.league
+  @include breakpoint($betsDesktop)
+    min-width: 44.5%
+
+  @include breakpoint($betsTabletLess)
+
+    justify-content: space-around
+
+  @include breakpoint($phone-less)
+      justify-content: center
+
+.league, .teams
+  @include breakpoint($betsTabletLess)
+    min-width: 90%
+
+.teams
+  @include breakpoint($betsDesktop)
+    min-width: 55.5%
+  @include breakpoint($betsTabletLess)
+    justify-content: space-between
+
+.team
+  @include breakpoint($phone)
+    max-width: em(230, 12)
+
+
+.endlessBottomBorder
+	&_gray
+		&:after
+			background-color: rgba(0,0,0,0.05)
+	&_white
+		&:after
+			background-color: rgba(#e3e4e8, .2)
+	&:after
+		content: ""
+		position: absolute
+		width: em(10000)
+		height: 1px
+		top: 100%
+		left: em(-5000)
+
+.tableHead
+  border-style: solid
+  border-color: $gray
+  border-bottom-width: 1px
+  border-top-width: 1px
+  padding-top: em(4, 12)
+  padding-bottom: em(4, 12)
+  @include breakpoint($tablet-less)
+  	padding-bottom: .75em
+
+
+.matchBetGrid
+	grid-gap: 0 10px
+	justify-content: center
+	display: grid
+	grid-auto-rows: 1fr
+
+	@include breakpoint($phone)
+		grid-template-columns: 30% repeat(3, 15%)
+		grid-template-areas: "results offer offer empty" "results accept accept buttons"
+	@include breakpoint($tablet)
+		grid-template-columns: 20% repeat(2, 31%) 4%
+		grid-template-areas: "results  offer accept buttons"
+	@include breakpoint($phone-less)
+		grid-template-columns: 216px 40px
+		grid-gap: 10px
+		grid-template-rows: 55px repeat(2, 1fr)
+		grid-template-areas: "results empty" "offer empty" "accept buttons"
+
+	&_singleLine-tablet
+		@include breakpoint($tablet-less)
+			grid-template-rows: 1fr 0
+			grid-gap: 0
+			background-color: #fff
+		@include breakpoint($phone-less)
+			grid-template-rows: 18px 18px
+
+
+		& > *
+			@include breakpoint($phone-less)
+				align-items: center
+
+.growChilds
+  justify-content: flex-between
+  & > *
+    flex-grow: 1
+    margin-left: em(5, 10)
+    margin-right: em(5, 10)
+    min-width: em(61, 10)
+    @include breakpoint($tablet-less)
+      margin-left: em(2.5, 10)
+      min-width: em(55, 10)
+
+.offerBet
+  	grid-area: offer
+.offerBet, .acceptBet
+	@include breakpoint($tablet-less)
+		min-width: 216px
+.acceptBet
+	grid-area: accept
+	@include breakpoint($tablet-less)
+
+.matchStatusButtons, .acceptBet
+	@include breakpoint($phone-less)
+		// justify-content: flex-end
+
+	& > *
+		// margin-left: .5em
+		// margin-left: .5em
+.matchStatusButtons
+	grid-area: buttons
+
+
+.matchStatusResults
+	@include breakpoint($phone)
+		grid-area: results
+	@include breakpoint($phone-less)
+		grid-area: 1 / 3 / 1 / 1
+
+[type="radio"]:disabled + label
+	cursor: default
+
+[type="radio"]:checked:disabled + label
+    background: $gray $i 
+
+@import './parts/index'

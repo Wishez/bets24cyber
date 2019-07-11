@@ -1,0 +1,33 @@
+.games
+  @supports(display: grid)
+    grid-template-columns: repeat(auto-fit, 35px)
+    grid-column-gap: 5px
+
+.gameSorter
+  will-change: transform
+  transition: transform .3s $sharp
+
+  @include breakpoint(max-width 500em / 16)
+    min-width: 100%
+    margin-top: .5em
+
+
+  &__button
+    min-width: em(30)
+    min-height: em(30)
+    height: 1px
+    margin-top: 0
+
+
+.game
+  padding: 0
+  filter: grayscale(1)
+  will-change: filter, opacity, transform
+  transition: filter .2s $sharp, opacity .2s $sharp, transform .2s $sharp
+  max-width: 27px
+  &:hover
+    transform: scale(1.04)
+  &:hover, &_active
+    opacity: 1
+  &_active
+    filter: grayscale(0)

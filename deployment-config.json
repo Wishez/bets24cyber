@@ -1,0 +1,9 @@
+{
+    "type": "sftp",
+    "host": "159.253.23.155",
+    "username": "root",
+    "password": "nrLPV95s767vUtRf",
+    "port": 22,
+    "remotePath": "/var/www/admin/www/esx.bet/",
+    "uploadOnSave": true
+}

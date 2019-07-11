@@ -1,0 +1,22 @@
+.matchesSlider
+  max-width: 92%
+  min-width: 92%
+
+.sliderControls
+  font-size: em(10)
+  top: 48%
+  left: 0
+  @include breakpoint($phone-less)
+    display: none
+
+  &__button
+    background-color:
+    min-width: em(23, 10)
+    min-height: em(23, 10)
+    &_previous
+      right: calc(100% + 6px)
+    &_next
+      left: calc(100% + 5px)
+      
+.swiper-button-disabled
+  opacity: .5

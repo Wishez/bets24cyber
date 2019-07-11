@@ -1,0 +1,23 @@
+.subscribtionForm
+    max-width: 39%
+    min-height: em(39, 12)
+    
+    @include breakpoint(max-width em($containerWidth))
+        min-width: 100%
+    @include breakpoint($phone-less)
+        flex-wrap: wrap
+    &__label
+        padding-right: em(20, 12)
+        @include breakpoint($phone-less)
+            padding-right:  0
+
+.controller
+    max-width: em(265, 12)
+    min-height: em(39, 12)
+    &__input
+        min-width: 100%
+        text-indent: 14px
+    &__button
+        top: 3px
+        right: 3px
+        position: absolute $i

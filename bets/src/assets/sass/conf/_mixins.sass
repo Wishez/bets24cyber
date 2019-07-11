@@ -1,0 +1,125 @@
+$i: !important
+
+@mixin round($value, $corner: '') 
+    @if $corner != '' 
+      $corner: $corner + '-'
+    border-#{$corner}: $value
+
+
+
+@mixin adaptiveImage($name, $max-width, $padding-bottom, $url, $isIcon: true) 
+  .imageContainer_#{$name}
+    max-width: #{$max-width}
+
+  
+  .imageContainer__image_#{$name}
+    @if $isIcon 
+      $url: 'icons/#{$url}' 
+    
+
+    background-image: url('./#{$url}')
+    padding-bottom: #{$padding-bottom}
+  
+
+
+@mixin multy-background($url, $color, $padding-bottom, $max-height) 
+  background-image: url("#{$url}")
+  
+  max-height: #{$max}-height
+  padding-bottom: #{$padding-bottom}
+  &::after 
+    background-color: #{$color}
+  
+@mixin generateAfterAndBefore($content)
+  position: relative
+  &::after, &::before
+    content: #{$content}
+    position: absolute
+    
+
+  
+
+
+
+
+  
+
+@mixin responsive-background($padding-bottom: false, $url: false, $attachment: false) 
+  @if $attachment 
+    background-attachment: $attachment
+  
+  
+  @if $padding-bottom 
+    padding-bottom: #{$padding-bottom}
+  
+  
+  @if $url 
+    background-image: url('#{$url}')
+  
+
+
+
+
+@mixin link-colors( $color: $baseLinkColor, $hover-color: $baseHoverLinkColor, $active-color: $baseActiveLinkColor, $visited-color: $baseVisitedLinkColor, $focus-color: $baseFocusLinkColor, $one-color: false)
+
+  @if ($one-color)
+    $color: $one-color
+    $hover-color: $one-color
+    $active-color: $one-color
+    $visited-color: $one-color
+    $focus-color: $one-color
+  
+
+  color: #{$color}
+  &:hover 
+    color: #{$hover-color}
+  
+  &:active 
+    color: #{$active-color}
+  
+  &:visited 
+    color: #{$visited-color}
+  
+  &:focus 
+    color: #{$focus-color}
+  
+
+
+
+@mixin placehodler-color($color) 
+  ::-webkit-input-placeholder 
+      color: $color
+      font-style: italic
+  :-ms-input-placeholder 
+      color: $color
+      font-style: italic
+  ::-moz-placeholder 
+      color: $color
+      font-style: italic
+  :-moz-placeholder 
+      color: $color
+      font-style: italic
+  :placeholder-shown 
+      color: $color
+      font-style: italic
+  
+
+  
+
+@mixin placehodler-color-focus($color) 
+  &:focus::-webkit-input-placeholder 
+      color: $color
+  
+  &:focus:-ms-input-placeholder 
+      color: $color
+  
+
+  &:focus::-moz-placeholder 
+      color: $color
+  
+
+  &:focus:-moz-placeholder 
+      color: $color
+  
+  :placeholder-shown 
+      color: $color

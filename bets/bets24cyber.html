@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width,initial-scale=1" name="viewport">
+        <title>bets24cyber</title>
+
+
+        <link rel="preload" href="/js/vendor.js" as="script">
+        <link rel="preload" href="/js/app.js" as="script">
+        <link rel="preload" href="/css/app.css" as="style">
+        <link rel="preload" href="/js/manifest.js" as="script">
+    <link href="/css/app.css" rel="stylesheet"></head>
+    <style>
+        .curtain {
+            position: fixed;
+            background: #fff;
+            top: 0;
+            left: 0;
+            display: flex;
+            font-size: 2.5rem;
+            justify-content: center;
+            align-items: center;
+            min-width: 100vw;
+            min-height:  100vh;
+            z-index: 1000;
+            color: #333;
+        }
+    </style>
+    <body>
+        <noscript>
+          This is your fallback content in case JavaScript fails to load.
+        </noscript>
+        <div class="layouts">
+            <!-- begin header -->
+<header id="header" class="width_fill">
+    <!-- begin curtain -->
+    <transition name="fading">
+        <div v-if="!isPageLoaded" class="curtain" role="presentation">
+             <svg aria-live="assertive" role="alert" aria-label="Загрузка страницы" height="1em" width="1em" viewbox="0 0 44 44">
+                <use xlink:href="#pagePreloader"/>
+              </svg>
+        </div>
+    </transition>
+    <!-- end curtain -->
+
+    <!-- begin headerContainer -->
+    <div class="headerContainer height_fill v-centered container parent row wrap h-between">
+        <site-navigation class-name="baseChild" label="Навигация по сайту">
+        </site-navigation>
+        <!-- Для экранных читалок -->
+        <div hidden="" id="currentPage">
+            Активная страница
+        </div>
+        <!-- begin siteMeta -->
+        <div class="siteMeta parent row nowrap h-between baseChild font-size_12 index_big">
+            <time :datetime="accessibleTime" aria-label="Ткущее время" class="siteMeta__time color-paleGray">
+                [[ currentTime ]]
+            </time>
+            <div class="relative siteMetaLanguages font-family_main parent centered">
+                <base-button :action="switchLanguageState" id="openOrCloseLanguagesButton" label="Показать открыть выбор языка" unstyled="">
+                    [[ currentLanguage ]]
+                    <chevron-icon :position="isLanguagesShown ? 'up' : 'down'" aria-labeledby="openOrCloseLanguagesButton">
+                    </chevron-icon>
+                </base-button>
+                <transition appear="" name="fadeTranslateToBottom">
+                    <ul :aria-expanded="isLanguagesShown" aria-label="Навигация по страницам с разным переводом" class="absolute siteMetaLanguages__list font-size_18 popupList popupList_centered" role="navigation" v-if="isLanguagesShown">
+                        <li :key="index" v-for="(language, index) in languages">
+                            <a :aria-label="language.label + 'перевод'" href="/" @click="chooseLanguage(language.name)()">
+                                [[ language.name ]]
+                            </a>
+                        </li>
+                    </ul>
+                </transition>
+            </div>
+        </div>
+        <!-- end siteMeta -->
+        <transition name="fading">
+            <!-- begin userPanel -->
+            <div v-if="$store.state.personalRoom.user.isLogged" class="parent h-end row nowrap userPanel baseChild v-centered">
+                <div class="userPanel__balance font-size_18 font-weight_semibold">
+                    &dollar; [[ $store.state.personalRoom.user.balance ]]
+                </div>
+                <button-icon :action="openPersonalRoom" :is-awesome-icon="false" class-name="userButton color_white" modifier="blue">
+                    <lazy-image :src="userIcon" class-name="userButton__icon" relative="">
+                    </lazy-image>
+                </button-icon>
+            </div>
+            <!-- end userPanel -->
+            <!-- begin userPanel -->
+            <div v-else class="parent row nowrap userPanel baseChild h-between v-centered font-size_10 margin-left_large h-end_tablet margin-left_zero-phone">
+                <base-button :action="openAuthPopup('login')" class-name="margin-right_base-tablet" modifier="blue">
+                 Войти
+                </base-button>
+                <base-button :action="openAuthPopup('registration')" modifier="blue">
+                 Регистрация
+                </base-button>
+            </div>
+            <!-- end userPanel -->
+        </transition>
+
+    </div>
+    <user-authorization :submit-recover-password="() => {
+          log(recoverPassword);
+
+          const formName = formsNames.recoverPassword;
+          const requestOptions = {
+            headers: {
+              'X-CSRF-Token': $store.state.csrftoken
+            }
+          };
+
+          $store.commit('authorization/switchRequestingState', true);
+
+          // const request = axios(requestOptions);
+
+          const request = window.Promise.resolve({
+            status: 'ok',
+            errorMessage: 'Мы не нашли аккаунт с таким email адресом.'
+          });
+
+          window.setTimeout(() => {
+            request.then(response => {
+            const isError =  response.status !== 'ok';
+
+              const message = response.message;
+              const responseOptions = {
+                message: isError ? response.errorMessage : `Мы выслали письмо с инструкциями по восстановлению пароля на вашу почту ${recoverPassword.email}.`,
+                isError,
+                formName
+              };
+
+              $store.dispatch(
+                'authorization/showResponseMessage',
+                responseOptions
+              );
+            });
+          }, 1500);
+        }" :submit-login="() => {
+          log(login);
+
+          const formName = formsNames.login;
+
+          if (!login.username && !login.password) {
+            return false;
+          };
+
+          const requestOptions = {
+            headers: {
+              'X-CSRF-Token': $store.state.csrftoken
+            }
+          };
+
+          $store.commit('authorization/switchRequestingState', true);
+
+          // const request = axios(requestOptions);
+
+          const request = window.Promise.resolve({
+            status: 'ok',
+            userData: {
+              balance: 9999.99,
+              name: login.username,
+              avatar: '/images/personalRoom/avatar.jpg',
+              id: 139452,
+              password: login.password
+            },
+            isLogged: true
+          });
+
+          window.setTimeout(() => {
+            request.then(response => {
+             const isError = response.status !== 'ok';
+              const responseOptions = {
+                userData: {
+                  ...response.userData
+                },
+                errorMessage: isError ? 'Что-то пошло не так.' : '',
+                isError,
+                formName
+              };
+
+              $store.dispatch(
+                'authorization/showUserDataIfUserLogged',
+                responseOptions
+              );
+            });
+          }, 1500);
+
+        }" :submit-registration="() => {
+          log(registration);
+
+          const formName = formsNames.registration;
+
+          if (registration.repeatedPassword !== registration.password) {
+            return false;
+          };
+
+          const requestOptions = {
+            headers: {
+              'X-CSRF-Token': $store.state.csrftoken
+            }
+          };
+
+          $store.commit('authorization/switchRequestingState', true);
+
+          // const request = axios(requestOptions);
+
+          const request = window.Promise.resolve({
+            status: 'ok',
+            userData: {
+              balance: 0,
+              name: registration.username,
+              avatar: 'None',
+              id: 139452
+            },
+            successMessage: 'Вы успешно прошли регистрацию.'
+          });
+
+          window.setTimeout(() => {
+            request.then(response => {
+              const isError = response.status !== 'ok';
+              const responseOptions = {
+                userData: {
+                  ...response.userData
+                },
+                errorMessage: isError ? 'Что-то пошло не так.' : '',
+                successMessage: response.successMessage,
+                isError,
+                formName,
+              };
+
+
+              this.$store.dispatch(
+                'authorization/notifyAboutSuccesRegistration',
+                responseOptions
+              );
+            });
+          }, 1500);
+
+
+        }">
+    </user-authorization>
+</header>
+<!-- end header -->
+
+
+            <!-- begin banner -->
+<aside class="banner relative" id="banner">
+    <lazy-image :is-image-fill-container="true" :src="banner" absolute="">
+    </lazy-image>
+    <div class="container h-around v-centered height_fill parent row wrap">
+        <p class="banner__paragraph color_white font-size_26 margin-top_zero line-height_4">
+            Получите гарантированный бонус на счет при регистрации аккаунта и ставьте на любимую команду!
+        </p>
+        <base-button :action="takeBonus" class-name="banner__button font-weight_semibold" modifier="blue">
+            Получить бонус
+        </base-button>
+    </div>
+</aside>
+<!-- end banner -->
+
+
+            <!-- main content -->
+<main id="main">
+
+    <section-container title="Матчи дня">
+        <!-- begin gameSorter -->
+        <div class="grow gameSorter parent row v-centered margin-left_auto">
+
+
+            <!-- begin games -->
+            <ul class="grow display_grid h-end v-centered games parent row">
+              <!-- begin gameSorter__button -->
+              <li :class="`game margin-top_zero ${$store.state[matchesModuleId].activeGameId === 'all' ?
+                'grayscale_none' : ''}`" role="presentation">
+                <a aria-label="Выбрать все игры" href="#" :class="`unstyledLink gameSorter__button baseChild circle  parent centered margin-top_small-phone ${$store.state[matchesModuleId].activeGameId === 'all' ?
+                     'button_blue' : 'button_gray'}`" @click.prevent="changeGame('all', matchesModuleId)()">
+                   <icon name="list-ul">
+               </a>
+              </li>
+              <li v-for="(game, index) in games" :key="index + 1" :class="{
+                  'game margin-top_zero': true,
+                  'game_active': game.id === $store.state[matchesModuleId].activeGameId || $store.state[matchesModuleId].activeGameId === 'all',
+                  'opacity_half': game.id !== $store.state[matchesModuleId].activeGameId,
+
+              }" role="presentation">
+                    <!-- Можно использовать ссылку. Но ссылка семантичный элемент, который ведёт пользователя на другую страницу. Если элемент этого не делает, но пользователь с ним взаимодействует, то это кнопка.
+                    Выбирай на свою совесть ಠ_ಠ.  -->
+                     <a :data-id="game.id" :aria-label="game.label" class="parent margin-top_small-phone" href="#" @click.prevent="changeGame(game.id, matchesModuleId)()">
+                        <lazy-image :src="game.image" :alt="game.label" :title="game.label" relative>
+                    </a>
+              </li>
+            </ul>
+            <!-- end games -->
+
+        </div>
+        <!-- end gameSorter -->
+
+
+        <!-- begin matchesSlider -->
+        <div class="matchesSlider margin_centered relative">
+            <!-- begin tiny-slider -->
+            <tiny-slider :fixed-width="233" :gutter="29" :loop="false" :mouse-drag="true" :responsive="responsive" controls-container=".sliderControls" items="4">
+                <!-- Инкапсулированный компонент match-info -->
+                <!-- Все данные можно помещать в аттрибуты этого компонента. -->
+                <match-info v-for="(match, index) in $store.state.matches.matches" :key="index" :game-id="$store.state.matches.activeGameId" :game-image="false" :game-background="false" :league-name="match.league.name" :league-stage="match.league.stage" :left-team-logo="match.leftTeam.logo" :left-team-name="match.leftTeam.name" :left-team-ratio="match.leftTeam.ratio" :match-date="match.match.date" :right-team-logo="match.rightTeam.logo" :right-team-name="match.rightTeam.name" :right-team-ratio="match.rightTeam.ratio" :match-url="match.match.url"></match-info>
+            </tiny-slider>
+            <!-- end tiny-slider -->
+
+            <!-- begin sliderControls -->
+            <div class="sliderControls absolute width_fill">
+                <!-- begin sliderControls__button  -->
+                <base-button class="sliderControls__button sliderControls__button_previous absolute centered parent circle shadow_white-block" id="previousMatchButton" label="Предыдущие матчи" unstyled="">
+                    <chevron-icon position="left">
+                    </chevron-icon>
+                </base-button>
+                <!-- end sliderControls__button  -->
+
+                <!-- begin sliderControls__button  -->
+                <base-button class="sliderControls__button sliderControls__button_next absolute centered parent circle shadow_white-block" id="nextMatchButton" label="Следующие матчи" unstyled="">
+                    <chevron-icon position="right">
+                    </chevron-icon>
+                </base-button>
+                <!-- end sliderControls__button  -->
+
+            </div>
+            <!-- end sliderControls -->
+        </div>
+        <!-- end matchesSlider -->
+    </section-container>
+    <!-- end matchesSection -->
+
+    <!-- begin betsSection -->
+    <section-container title="Биржа ставок">
+        <!-- begin gameSorter -->
+        <div class="gameSorter parent row v-centered margin-left_auto grow">
+            <!-- begin games -->
+            <ul class="grow display_grid h-end v-centered games parent row">
+                <!-- begin gameSorter__button -->
+                <li :class="`game margin-top_zero ${$store.state[betsModuleId].activeGameId === 'all' ?
+                  'grayscale_none' : ''}`" role="presentation">
+                  <a aria-label="Выбрать все игры" href="#" :class="`unstyledLink gameSorter__button baseChild circle  parent centered margin-top_small-phone ${$store.state[betsModuleId].activeGameId === 'all' ?
+                       'button_blue' : 'button_gray'}`" @click.prevent="changeGame('all', betsModuleId)()">
+                     <icon name="list-ul">
+                 </a>
+                </li>
+                <li v-for="(game, index) in games" :key="index + 1" :class="{
+                      'game margin-top_zero': true,
+                      'game_active': game.id === $store.state[betsModuleId].activeGameId || $store.state[betsModuleId].activeGameId === 'all',
+                      'opacity_half': game.id !== $store.state[betsModuleId].activeGameId,
+
+                }">
+                    <a :data-id="game.id" :aria-label="game.label" class="parent" href="#" tabindex="0" @click.prevent="changeGame(game.id, betsModuleId)()">
+                        <lazy-image :src="game.image" :alt="game.label" :title="game.label" relative>
+                    </a>
+              </li>
+              <!-- end game -->
+            </ul>
+            <!-- end games -->
+
+        </div>
+        <!-- end gameSorter -->
+
+        <!-- begin bets -->
+        <div class="width_fill bets margin-top_29 shadow_spread">
+            <!-- begin betsSorter -->
+            <form method="get" class="betsSorter font-size_12" action="#">
+                <!-- begin sorterSection -->
+                <fieldset class="margin_vertical-base-tablet sorterSection sorterSection_styled sorterSection_zeroVerticalPadding margin_centered-phone">
+                  <legend class="visible-hidden">Сортировка по состоянию матчей</legend>
+                  <!-- begin  stateMatchesSorter -->
+                  <div class="stateMatchesSorter parent h-between height_fill wrap">
+
+                    <input id="live-bets-input" v-model="betsSorter.status" type="radio" name="betsSorterStatus" value="liveBets" @click="sortBets">
+                    <label id="live-bets-label" for="live-bets-input" class="betsSorter__label round_25 relative text_centered">
+                      Live ставки
+                    </label>
+                    <input id="all-input" v-model="betsSorter.status" type="radio" name="betsSorterStatus" value="all" @click="sortBets">
+                    <label id="all-label" for="all-input" class="betsSorter__label round_25 relative text_centered">
+                      Все матчи
+                    </label>
+                    <input id="results-input" v-model="betsSorter.status" type="radio" name="betsSorterStatus" value="results" @click="sortBets">
+                    <label id="results-label" for="results-input" class="betsSorter__label round_25 relative text_centered">
+                      Результаты
+                    </label>
+                  </div>
+                  <!-- end  stateMatchesSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+
+                <!-- begin sorterSection -->
+                <fieldset class="sorterSection sorterSection_styled margin_vertical-base-tablet margin_centered-phone">
+                  <legend class="visible-hidden">Дата:</legend>
+                  <!-- begin timeRangeSorter -->
+                  <sorter-date since-date-name="betsSorterSinceDate" until-date-name="betsSorterUntilDate" @set-since-date="betsSorter.sinceDate = $event;sortBets();" @set-until-date="betsSorter.untilDate = $event;sortBets();"></sorter-date>
+                  <!-- end timeRageSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+
+                <!-- begin sorterSection -->
+                <fieldset class="relative sorterSection sorterSection_styled index_big margin_vertical-base-tablet margin_centered-phone">
+                  <!-- Для настройки типов сортировки можно преедать массив из объектов в атрибут sorter types. Настройки состояния находятся в src/store/bets.  -->
+                  <sorter-types :is-shown="$store.state.bets.isSorterTypesShown" :sorter-types="$store.state.bets.sorterTypes" :on-choose-sorter-type="switchSorterTypeAndSort" :switch-display-of-sorter-types="switchSorterTypesState" :current-sorter-type="$store.state.bets.currentSorterType" list-label="Список вариантов сортировки матчей"></sorter-types>
+                  <!-- end typeSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+
+                <!-- begin sorterSection -->
+                <fieldset class="margin_vertical-base-tablet sorterSection sorterSection_search margin_centered-phone">
+                    <legend id="searchLabel" class="visible-hidden">
+                        Поиск
+                    </legend>
+                    <!-- begin searchSorter -->
+                    <div class="searchSorter relative height_fill padding-bottom_5 padding-top_5">
+
+                        <label for="searchSorter" class="searchSorter__label color_gray font-size_16 absolute position_base" aria-label="Поиск">
+                          <search-icon>
+                        </label>
+                        <input id="searchSorter" v-model="betsSorter.search" role="search" placeholder="Поиск" type="search" class="searchSorter__input width_fill height_fill" name="searchSorter" aria-describedby="searchLabel" @input="sortWithDelay">
+                        <!-- Динамическая сортировка @input="sortWithDelay" -->
+                  </div>
+                  <!-- end searchSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+            </form>
+            <!-- end betsSorter -->
+
+            <!-- begin bets-table -->
+            <!-- Если убрать атрибут is-bets-shown (необязательный атрибут), то прелоадера не будет - будет пустота. -->
+            <bets-table :is-bets-shown="$store.state.bets.bets.length" ref="betsSorter" :on-change-sorter-settings="(sorterSettings) => {
+                log(sorterSettings);
+              }" @load-matches="() => {
+                const requstMethod = 'POST';
+                const requestUrl = $store.state.bets.choosenMatchUrl;
+                const requestHeaders = {
+                  'X-CSRF-Token': $store.state.csrftoken
+                };
+                const requestParametrs = {
+                  url: requestUrl,
+                  data: {},
+                  method: requstMethod,
+                  headers: requestHeaders
+                };
+
+                // https://github.com/axios/axios
+                // const request =  axios(requestParametrs);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  data: {
+                      matches: generatedMatches()
+                  }
+
+                });
+
+                // Тестовая задержка.
+                window.setTimeout(() => {
+
+                  request.then((response) => {
+
+                      $store.commit('bets/updateMatches', [
+                          ...response.data.matches
+                      ]);
+
+                  }); // end request
+
+                }, 1500);
+
+              }">
+                <bet-info v-for="(bet, index) in $store.state.bets.bets" :key="index" :left-team-ratio="bet.leftTeam.ratio" :left-team-name="bet.leftTeam.name" :left-team-logo="bet.leftTeam.logo" :left-team-country="bet.leftTeam.country" :right-team-ratio="bet.rightTeam.ratio" :right-team-name="bet.rightTeam.name" :right-team-logo="bet.rightTeam.logo" :right-team-country="bet.rightTeam.country" :match-date="bet.match.date" :league-name="bet.league.name" :league-logo="bet.league.logo" :match-url="bet.match.url"></bet-info>
+
+            </bets-table>
+            <!-- end bets-table -->
+        </div>
+        <!-- end bets -->
+
+    </section-container>
+    <!-- end betsSection -->
+  </main>
+
+
+
+            <!-- begin footer -->
+<footer id="footer" class="background-color_blueGradient footer color_white">
+    <!-- begin container -->
+    <div class="container relative endlessBottomBorder_white endlessBottomBorder padding-bottom_base padding-bottom_large-phone padding-top_small parent row wrap v-centered">
+        <!-- begin site-navigation -->
+        <site-navigation :logo-colored="false" active-link-color="white" label="Навигация по сайту в нижней части страницы" logo-color-name="white" modifier="footer" navigation-style="white">
+        </site-navigation>
+        <!-- end site-navigation -->
+
+        <!-- begin subscribtionForm -->
+        <!-- <subscribtion-form></subscribtion-form> -->
+        <form class="font-size_12 subscribtionForm parent row nowrap grow h-between margin-top_base-phone margin-bottom_base-phone">
+            <label class="subscribtionForm__label parent centered margin-left_auto width_fill-phone" for="subscribtion_email">
+              Подписаться на рассылку:
+            </label>
+            <!-- begin controller -->
+            <div class="relative controller parent row nowrap grow margin_centered-phone margin-top_small-phone">
+                <input id="subscribtion_email" v-model.trim="subscribtion_email" class="round_25 controller__input" type="email" name="subscribtion_email" placeholder="Введите ваш e-mail" autocomplete="email">
+                <base-button :action="onSubmit" type="submit" modifier="blue" class-name="text_upper absolute position_right-base controller__button">
+                    Отправить
+                </base-button>
+            </div>
+            <!-- end controller -->
+        </form>
+        <!-- end subscribtionForm -->
+    </div>
+    <!-- end container -->
+
+    <!-- begin container -->
+    <div class="padding-top_base container parent row wrap v-centered">
+        <p class="copyright opacity_half grow text_centered-phone margin-top_zero-phone">
+            ©2017. Все права защищены
+        </p>
+        <footer-games>
+        </footer-games>
+        <!-- end  games-->
+    </div>
+    <!-- end container -->
+</footer>
+<!-- end footer -->
+
+        </div>
+
+        <personal-room id="personalRoom" ref="personalRoom" v-if="$store.state.popups[personalRoomPopupName]" :on-change-transactions-sorter-settings="(sorterSettings) => {
+		log(sorterSettings);
+	}" :on-change-created-bets-sorter-settings="(sorterSettings) => {
+		log(sorterSettings);
+	}" :on-change-accepted-bets-sorter-settings="(sorterSettings) => {
+		log(sorterSettings);
+	}" :on-change-contact-center-sorter-settings="(sorterSettings) => {
+		log(sorterSettings);
+	}" @open-personal-room="(context) => {
+
+		const method = 'GET';
+      	let requestUrl = '/api/current';
+      	const headers = {
+        	'X-CSRF-Token': $store.state.csrftoken
+      	};
+      	const requestParams = {
+	        userId: user.id
+	    };
+
+
+		const perosnalRoomRequestUrls = {
+			[viewNames.balance]: '/userTransactionsData/',
+			[viewNames.contactCenter]: '/userContactCenterData/',
+			[viewNames.createdBets]: '/userCreatedBetsData/',
+			[viewNames.acceptedBets]: '/userAcceptedBetsData/',
+		};
+
+		const requestPart = perosnalRoomRequestUrls[personalRoom.currentOpenedView];
+
+		if (!requestPart) {
+			requestUrl += '/allUserData/';
+		} else {
+			requestUrl += requestPart;
+		}
+
+
+
+		// https://github.com/axios/axios
+		// const request =  axios({
+			//url: requestUrl,
+			//data: matchData,
+			//method,
+			//headers
+		//})
+
+		const request = window.Promise.resolve({
+			status: 'ok',
+			userTransactions: testUserData.transactions,
+			userCreatedBets: testUserData.createdBets,
+			userAcceptedBets: testUserData.acceptedBets,
+			userThreads: testUserData.contactCenter
+		});
+
+		// Тестовая задержка.
+		window.setTimeout(() => {
+			request.then((response) => {
+				// В src/constants/personalRoom в объекте testUserData можно найти пример данных.
+				let newUserTransactionsData = [];
+				let newUserCreatedBets = [];
+				let newUserContactCenterData = [];
+				let newUserAcceptedBets = [];
+
+
+
+
+
+				$nextTick(() => {
+					for (let i = 0; i < 8; i++) {
+						newUserTransactionsData = [
+							...newUserTransactionsData,
+							...response.userTransactions
+						];
+						newUserCreatedBets = [
+							...newUserCreatedBets,
+							...response.userCreatedBets
+						];
+						newUserAcceptedBets = [
+							...newUserAcceptedBets,
+							...response.userAcceptedBets
+						];
+						newUserContactCenterData = [
+							...newUserContactCenterData,
+							...response.userThreads
+						];
+					}
+
+					$store.commit(
+		        		`personalRoom/setUserData`,
+		        		{
+		        			moduleName: 'transactions',
+		        			newUserData: newUserTransactionsData
+		        		}
+		    		);
+
+		    		$store.commit(
+		        		`personalRoom/setUserData`,
+		        		{
+		        			moduleName: 'createdBets',
+		        			newUserData: newUserCreatedBets
+		        		}
+		    		);
+
+		    		$store.commit(
+		        		`personalRoom/setUserData`,
+		        		{
+		        			moduleName: 'acceptedBets',
+		        			newUserData: newUserAcceptedBets
+		        		}
+		    		);
+
+		    		$store.commit(
+		        		`personalRoom/setUserData`,
+		        		{
+		        			moduleName: 'contactCenter',
+		        			newUserData: newUserContactCenterData
+		        		}
+		    		);
+				});
+
+
+
+				// Итеративное заполнение тестовыми данными.
+
+			    [
+			    	//'transactions',
+			    	//'acceptedBets',
+			    	//'createdBets',
+			    	//'contactCenter'
+			    ].forEach(
+			      	moduleName => {
+			        	// First.
+			        	$store.commit(
+			        		`personalRoom/setUserData`,
+			        		{moduleName}
+			    		);
+			      	}
+			    );
+
+
+				context.isLoadedData = true;
+			});
+		}, 2499);
+	}">
+	<!-- begin personalRoomUserPanel -->
+    <div :class="{
+    	'shadow_spread personalRoomUserPanel sticky position_base height_fill background-color_white index_big': true
+	}">
+      <!-- begin userInfo -->
+      <div class="userInfo parent column centered relative margin_centered">
+        <!-- begin userInfoMessages -->
+        <!-- end userInfoMessages -->
+        <base-button :action="switchView(viewNames.contactCenter)" :class="`userInfoMessages absolute`" label="Перейти к сообщениям" unstyled>
+          <icon :class="`userInfoMessages__icon ${personalRoom.currentOpenedView === viewNames.contactCenter ? ' userInfoMessages__icon_blue' : ''}`" name="envelope"></icon>
+          <span class="absolute userInfoMessages__quantity parent centered circle padding_container-small background-color_blue color_white">
+          	[[ user.contactCenter.length ]]
+          </span>
+        </base-button>
+        <lazy-image :src="avatar.files.length ? avatar.files[0].url : user.avatar" :fit-block="false" class-name="userInfoAvatar overflow_hidden circle parent centered relative">
+       		<file-upload ref="uploadAvatar" extensions="gif,jpg,jpeg,png,webp" accept="image/png,image/gif,image/jpeg,image/webp" name="avatar" class="absolute_force position_base userInfoAvatar__button width_fill height_fill parent_force centered color_white font-size_12" v-model="avatar.files" @input-filter="avatarFilter" @input-file="uploadUserAvatar">
+          		Изменить аватар
+        	</file-upload>
+       	</lazy-image>
+    	<!-- begin userInfo__title -->
+        <div class="margin-top_base parent row h-between v-centered margin-top_zero-tabletLess">
+	        <h2 class="userInfo__title font-size_18 font-weight_semibold">
+	          [[ user.name ]]
+	        </h2>
+	        <base-button :action="() => { $store.dispatch('authorization/logOutAndCleanCache'); }" modifier="blue" class-name="circle color_white font-size_10" label="Выйти из аккаунта" is-circle>
+	    		<svg aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 512 512">
+	    			<path fill="currentColor" d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"></path>
+	    		</svg>
+	    	</base-button>
+        </div>
+        <!-- end userInfo__title -->
+    	<!-- begin userInfo__balance -->
+        <p class="userInfo__balance color_blue font-size_20 font-weight_bold margin-top_small margin-top_zero-tabletLess">
+          $ [[ user.balance ]]
+        </p>
+        <!-- end userInfo__balance -->
+      </div>
+      <!-- end userInfo -->
+
+
+      <nav class="personalRoomNavigation sticky index_big" aria-label="Навигация по личному кабинету">
+        <ul class="personalRoomNavigationList font-size_14 height_fill v-end">
+          <li v-for="(link, index) in personalRoom.links" :key="index" class="personalRoomSectionLink parent row margin-top_zero-tabletLess">
+
+            <base-button :action="switchView(link.viewName)" :class-name="`personalRoomSectionLink__button parent row v-centered font-weight_semibold font-size_14 width_fill${personalRoom.currentOpenedView === link.viewName ? ' personalRoomSectionLink__button_active' : ''}`" unstyled>
+              <lazy-image :src="link.icon" :fit-block="false" :class-name="`personalRoomSectionLink__icon background-color_${personalRoom.currentOpenedView === link.viewName ? 'blue' : 'darkBlue'}`"></lazy-image>
+
+              <span class="personalRoomSectionLink__label color_darkBlue">
+              	[[ link.label ]]
+              </span>
+            </base-button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!-- end personalRoomUserPanel -->
+
+    <!-- begin personalRoom -->
+    <div class="grow personalRoom relative height_fill">
+    	<transition name="switchFading" appear>
+	      <!-- begin personalRoomBalance -->
+	      <section v-if="personalRoom.currentOpenedView === viewNames.balance && user.transactions.length" class="personalRoomBalance display_grid grid-rows_fill height_fill">
+
+	        <!-- begin userPaymentActionButtons -->
+	        <div class="userPaymentActionButtons parent row v-end wrap centered_tablet padding_horizontal-tablet">
+	          <base-button :action="changeUserPaymentAction({
+	            	userAction: userPaymentActions.deposit,
+	            	availabledPayments: [
+						'visa',
+						'mastercard',
+						'bitcoin'
+	            	]
+	        	})" :modifier="personalRoom.currentPaymentAction === userPaymentActions.deposit ?
+	              'blue shadow_big-spread' :
+	              'strokeBlue'
+	            " class-name="userPaymentActionButtons__button font-weight_semibold">
+	            Депозит
+	          </base-button>
+
+	          <base-button :action="changeUserPaymentAction({
+	            	userAction: userPaymentActions.withdrawal,
+	            	availabledPayments: [
+						'visa',
+						'mastercard',
+						'bitcoin',
+						'paypal',
+						'webmoney',
+						'ether',
+	            	]
+	        	})" :modifier="personalRoom.currentPaymentAction === userPaymentActions.withdrawal ?
+	              'blue shadow_big-spread' :
+	              'strokeBlue'
+	            " class-name="userPaymentActionButtons__button font-weight_semibold">
+	            Вывод
+	          </base-button>
+
+	        </div>
+	        <!-- end userPaymentActionButtons -->
+
+	        <!-- begin paymentsWays -->
+	        <ul class="userPaymentWays parent row v-end font-weight_semibold wrap padding_horizontal-tablet centered_tablet padding-bottom_large-tablet">
+	          <li v-for="(payment, index) in personalRoom.payments.ways" :key="index" :class="[
+	            	'padding-top_increased paymentWay parent row relative after after_absolute',
+	            	 personalRoom.payments.availabled.indexOf(payment.id) !== -1 ? 'paymentWay_active' : 'paymentWay_disabled'
+	           ]">
+
+	            <a :href="payment.link" class="parent column centered width_fill" @click.prevent="openLinkInNewWindowIfAvailable($event)(
+	              	personalRoom.payments.availabled.indexOf(payment.id) !== -1
+	              )">
+	              <lazy-image :src="payment.icon" :fit-block="false" class-name="paymentWay__icon"></lazy-image>
+	              <span class="margin-top_base paymentWay__label">
+	                [[ payment.label ]]
+	              </span>
+	            </a>
+	          </li>
+	        </ul>
+	        <!-- end userPaymentWays -->
+
+
+	        <!-- begin userTransactions -->
+
+	          <article class="userTransactions sorterContainer someBetContainer_tablet parent row wrap v-centered background-color_white">
+	            <h2 class="font-size_16 font-weight_semibold sorterContainer__title headingOffset_tablet">Транзакции:</h2>
+	            <!-- begin transactionsSorter -->
+	            <form class="transactionsSorter display_grid grow margin-top_small-tabletLess grid_three-phoneUp" action="" method="get">
+
+	              <sorter-date until-date-name="transactionsUntilDate" since-date-name="transactionsSinceDate" styled @set-until-date="transactions.untilDate = $event;sortTransactions();" @set-since-date="transactions.sinceDate = $event;sortTransactions();"></sorter-date>
+
+	              <sorter-types :is-shown="personalRoom[transactionBetTypeSorterName].isListOpened" :sorter-types="personalRoom[transactionBetTypeSorterName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+											sorterTypesName: transactionBetTypeSorterName,
+											sortFunctionName: 'sortTransactions'
+									})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(transactionBetTypeSorterName)" :current-sorter-type="personalRoom[transactionBetTypeSorterName].currentSorterType" :z-index="3" list-label="Список вариантов сортировки транзакций по ставкам" styled></sorter-types>
+
+	              <sorter-types :is-shown="personalRoom[transactionActionTypeSorterName].isListOpened" :sorter-types="personalRoom[transactionActionTypeSorterName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+											sorterTypesName: transactionActionTypeSorterName,
+											sortFunctionName: 'sortTransactions'
+									})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(transactionActionTypeSorterName)" :current-sorter-type="personalRoom[transactionActionTypeSorterName].currentSorterType" :z-index="2" list-label="Список вариантов сортировки транзакций по ставкам" styled></sorter-types>
+
+	              <sorter-types :is-shown="personalRoom[transactionStatusSorterName].isListOpened" :sorter-types="personalRoom[transactionStatusSorterName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+											sorterTypesName: transactionStatusSorterName,
+											sortFunctionName: 'sortTransactions'
+									})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(transactionStatusSorterName)" :current-sorter-type="personalRoom[transactionStatusSorterName].currentSorterType" :z-index="1" list-label="Список вариантов сортировки транзакций по ставкам" styled></sorter-types>
+
+	            </form>
+	            <!-- end transactionsSorter -->
+	          </article>
+	          <!-- end transactionSorterContainer  -->
+	          <!-- begin someBetsTable -->
+
+	          <article role="table" aria-label="Транзакции пользователя" class="someBetsTable background-color_white" aria-describedby="transactionsTable_description">
+	            <h2 id="transactionsTable_description" class="visible-hidden">
+	              Таблица транзакция пользователя
+	            </h2>
+	          <!-- begin userTransactionsHead -->
+	          <user-transactions-header></user-transactions-header>
+	          <!-- end userTransactionsHead -->
+
+	          <!-- begin userTransactionsBody -->
+	          <fade-translate-transition-group :delay="50" role="tablerows" tag="div" class="userTransactionsBody v-centered display_grid padding-top_quarter">
+
+	            <user-transaction v-for="(transaction, index) in getRangeOfData($store.getters['personalRoom/transactionsByTimeDecreasing'], 'transactions')" :key="index" :data-index="index" :transaction-date="transaction.date" :user-action="transaction.action" :transaction-status="transaction.status.processed" :sum="transaction.sum" :commission="transaction.commission" :rest="transaction.rest"></user-transaction>
+
+	          </fade-translate-transition-group>
+	          <!-- end userTransactionsBody -->
+
+	          <!-- begin transactionPagesPagination -->
+	          <data-pagination :switch-page="switchPage" :quantity-pages="paginations.transactions.quantityPages" :current-page-number="paginations.transactions.currentPage" data-name="Transactions"></data-pagination>
+	          <!-- end transactionPagesPagination -->
+
+		    </article>
+		    <!-- end  transactionsTable -->
+
+	      </section>
+	      <icon-preloader v-else-if="personalRoom.currentOpenedView === viewNames.balance && !user.transactions.length" class-name="padding-top_large padding-bottom_large" vertical-position="start"></icon-preloader>
+	      <!-- end personalRoomBalance -->
+	    </transition>
+	    <!-- end userTransactions -->
+
+
+	    <!-- begin userSomeBets -->
+		<transition name="switchFading" appear>
+
+	        <section v-if="personalRoom.currentOpenedView === viewNames.createdBets &&  user.createdBets.length" class="userSomeBets background-color_white display_grid grid-rows_fill height_fill personalRoomSection_phone">
+	          <!-- begin userCreatedBetsSorter -->
+	          <article class="userSomeBetsSorterContainer parent row wrap v-centered padding_horizontal-tablet padding-bottom_small-bet-tablet h-between someBetContainer_tablet">
+	            <h2 class="font-weight_semibold userSomeBetsSorterContainer__title font-size_18">Созданные  ставки:</h2>
+	            <!-- begin userSomeBetsSorter -->
+	            <form class="userSomeBetsSorter personalRoomSorter display_grid margin-top_base-tabletLess width_fill-tablet grid_three-phoneUp" action="" method="get">
+
+	              <sorter-date until-date-name="createdBetsUntilDate" since-date-name="createdBetsSinceDate" styled @set-until-date="createdBets.untilDate = $event;sortCreatedBets();" @set-since-date="createdBets.sinceDate = $event;sortCreatedBets();"></sorter-date>
+
+	              <sorter-types :is-shown="personalRoom[createdBetsGameName].isListOpened" :sorter-types="personalRoom[createdBetsGameName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+											sorterTypesName: createdBetsGameName,
+											sortFunctionName: 'sortCreatedBets'
+									})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(createdBetsGameName)" :current-sorter-type="personalRoom[createdBetsGameName].currentSorterType" :z-index="3" list-label="Список сортировки созданных ставок по играм" styled></sorter-types>
+
+	              <sorter-types :is-shown="personalRoom[createdBetsStatusName].isListOpened" :sorter-types="personalRoom[createdBetsStatusName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+											sorterTypesName: createdBetsStatusName,
+											sortFunctionName: 'sortCreatedBets'
+									})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(createdBetsStatusName)" :current-sorter-type="personalRoom[createdBetsStatusName].currentSorterType" :z-index="2" list-label="Список сортировки созданных ставок по их статусу" styled></sorter-types>
+	            </form>
+	            <!-- end transactionsSorter -->
+	          </article>
+	          <!-- end userCreatedBetsSorter  -->
+
+	          <!-- begin someBetsTable -->
+
+	          <article role="table" aria-label="Созданные ставки" class="someBetsTable background-color_white" aria-describedby="createdBetsTable_description">
+	            <h2 id="createdBetsTable_description" class="visible-hidden">
+	              Таблица созданых ставок
+	            </h2>
+
+	            <some-bets-table-head></some-bets-table-head>
+
+	            <!-- begin userChoosenBet -->
+
+	            <user-choosen-bet v-if="user.choosenCreatedBet && user.choosenCreatedBet.isShown" :bet-id="user.choosenCreatedBet.bet.id" :bet-status="user.choosenCreatedBet.bet.status" :game-image="user.choosenCreatedBet.game.image" :left-team-logo="user.choosenCreatedBet.leftTeam.logo" :win-team-logo="user.choosenCreatedBet.winTeam.logo" :right-team-logo="user.choosenCreatedBet.rightTeam.logo" :match-date="user.choosenCreatedBet.match.date" :win-team-name="user.choosenCreatedBet.winTeam.name" :left-team-name="user.choosenCreatedBet.leftTeam.name" :right-team-name="user.choosenCreatedBet.rightTeam.name" :note-about-end-match="user.choosenCreatedBet.match.noteAboutEndMatch" :ratio="$store.getters['personalRoom/createdBetsMean']" :sum="$store.getters['personalRoom/createdBetsCommonSum']" :accepted-sum="$store.getters['personalRoom/createdBetsCommonAcceptedSum']" :possible-win-sum="$store.getters['personalRoom/createdBetsCommonPossibleWinSum']"></user-choosen-bet>
+
+	            <!-- begin someBetsData -->
+	            <fade-translate-transition-group v-if="user.createdBets.length" :delay="50" :is-leave="false" tag="div" role="rowgroup" class="someBetsData display_grid font-size_10 v-start padding-top_base grid-rows_fill">
+
+	              <user-bet v-for="(createdBet, index) in getRangeOfData($store.getters['personalRoom/createdBetsByTimeDecreasing'], 'createdBets')" :key="index" :data-index="index" :bet-id="createdBet.bet.id" :game-image="createdBet.game.image" :left-team-logo="createdBet.leftTeam.logo" :win-team-logo="createdBet.winTeam.logo" :right-team-logo="createdBet.rightTeam.logo" :bet-status="createdBet.bet.status" :match-date="createdBet.match.date" :win-team-name="createdBet.winTeam.name" :left-team-name="createdBet.leftTeam.name" :right-team-name="createdBet.rightTeam.name" :note-about-end-match="createdBet.match.noteAboutEndMatch" :ratio="createdBet.bet.ratio" :sum="createdBet.bet.sum" :accepted-sum="createdBet.bet.acceptedSum" bet-type="createdBet">
+
+								<some-bet-statistic v-if="createdBetStatistic.betPortalId" :ratio="createdBetStatistic.ratio" :sum="createdBetStatistic.sum" :accepted-sum="createdBetStatistic.acceptedSum" :possible-win-sum="createdBetStatistic.ratio * createdBetStatistic.sum" :bet-portal-id="createdBetStatistic.betPortalId"></some-bet-statistic>
+							</user-bet>
+
+	            </fade-translate-transition-group>
+	            <!-- end someBetsData -->
+	            <!-- begin transactionPagesPagination -->
+	            <data-pagination :switch-page="switchPage" :quantity-pages="paginations.createdBets.quantityPages" :current-page-number="paginations.createdBets.currentPage" data-name="CreatedBets"></data-pagination>
+	            <!-- end transactionPagesPagination -->
+	          </article>
+	          <!-- end someBetsTable -->
+
+	        </section>
+	        <icon-preloader v-else-if="personalRoom.currentOpenedView === viewNames.createdBets && !user.createdBets.length" class-name="padding-top_large padding-bottom_large" vertical-position="start"></icon-preloader>
+
+	      <!-- end userSomeBets -->
+      </transition>
+      <!--  -->
+
+
+      <transition name="switchFading" appear>
+        <!-- begin userSomeBets -->
+        <section v-if="personalRoom.currentOpenedView === viewNames.acceptedBets && user.contactCenter.length" class="userSomeBets background-color_white display_grid grid-rows_fill height_fill personalRoomSection_phone">
+          <!-- begin userSomeBetsSorterContainer -->
+          <article class="userSomeBetsSorterContainer parent row wrap v-centered padding_horizontal-tablet padding-bottom_small-bet-tablet h-between someBetContainer_tablet">
+            <h2 class="font-weight_semibold userSomeBetsSorterContainer__title font-size_18">Принятые ставки:</h2>
+
+            <!-- begin userSomeBetsSorter -->
+            <form class="userSomeBetsSorter personalRoomSorter display_grid margin-top_base-tabletLess width_fill-tablet grid_three-phoneUp" action="" method="get">
+
+              <sorter-date until-date-name="acceptedBetsUntilDate" since-date-name="acceptedBetsSinceDate" styled @set-until-date="acceptedBets.untilDate = $event;sortAcceptedBets();" @set-since-date="acceptedBets.sinceDate = $event;sortAcceptedBets();"></sorter-date>
+
+              <sorter-types :is-shown="personalRoom[acceptedBetsGameName].isListOpened" :sorter-types="personalRoom[acceptedBetsGameName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+										sorterTypesName: acceptedBetsGameName,
+										sortFunctionName: 'sortAcceptedBets'
+								})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(acceptedBetsGameName)" :current-sorter-type="personalRoom[acceptedBetsGameName].currentSorterType" :z-index="3" list-label="Список сортировки созданных ставок по играм" styled></sorter-types>
+
+              <sorter-types :is-shown="personalRoom[acceptedBetsStatusName].isListOpened" :sorter-types="personalRoom[acceptedBetsStatusName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+										sorterTypesName: acceptedBetsStatusName,
+										sortFunctionName: 'sortAcceptedBets'
+								})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(acceptedBetsStatusName)" :current-sorter-type="personalRoom[acceptedBetsStatusName].currentSorterType" :z-index="2" list-label="Список сортировки созданных ставок по их статусу" styled></sorter-types>
+            </form>
+            <!-- end transactionsSorter -->
+          </article>
+          <!-- end userSomeBetsSorterContainer  -->
+
+          <!-- begin someBetsTable -->
+          <article role="table" aria-label="История принятых ставок" class="someBetsTable background-color_white" aria-describedby="acceptedBetsTable_description">
+            <h2 id="acceptedBetsTable_description" class="visible-hidden">
+              Таблица историй принятых ставок
+            </h2>
+
+            <some-bets-table-head></some-bets-table-head>
+
+            <!-- begin userChoosenBet -->
+
+
+
+            <!-- begin someBetsData -->
+            <fade-translate-transition-group :delay="50" :is-leave="false" tag="div" role="rowgroup" class="someBetsData display_grid font-size_10 v-start padding-top_base grid-rows_fill">
+              <user-bet v-for="(acceptedBets, index) in getRangeOfData($store.getters['personalRoom/acceptedBetsByTimeDecreasing'], 'acceptedBets')" :key="index" :data-index="index" :bet-id="acceptedBets.bet.id" :game-image="acceptedBets. game.image" :left-team-logo="acceptedBets.leftTeam.logo" :win-team-logo="acceptedBets.winTeam.logo" :right-team-logo="acceptedBets.rightTeam.logo" :bet-status="acceptedBets.bet.status" :match-date="acceptedBets.match.date" :win-team-name="acceptedBets.winTeam.name" :left-team-name="acceptedBets.leftTeam.name" :right-team-name="acceptedBets.rightTeam.name" :note-about-end-match="acceptedBets.match.noteAboutEndMatch" :ratio="acceptedBets.bet.ratio" :sum="acceptedBets.bet.sum" :accepted-sum="acceptedBets.bet.acceptedSum" bet-type="acceptedBet">
+							<some-bet-statistic v-if="acceptedBetStatistic.betPortalId" :ratio="acceptedBetStatistic.ratio" :sum="acceptedBetStatistic.sum" :accepted-sum="acceptedBetStatistic.acceptedSum" :possible-win-sum="acceptedBetStatistic.ratio * acceptedBetStatistic.sum" :bet-portal-id="acceptedBetStatistic.betPortalId"></some-bet-statistic>
+						</user-bet>
+
+            </fade-translate-transition-group>
+            <!-- end someBetsData -->
+
+            <!-- begin transactionPagesPagination -->
+            <data-pagination :switch-page="switchPage" :quantity-pages="paginations.acceptedBets.quantityPages" :current-page-number="paginations.acceptedBets.currentPage" data-name="AcceptedBets"></data-pagination>
+            <!-- end transactionPagesPagination -->
+          </article>
+          <!-- end someBetsTable -->
+
+        </section>
+		<icon-preloader v-else-if="personalRoom.currentOpenedView === viewNames.acceptedBets && !user.acceptedBets.length" class-name="padding-top_large padding-bottom_large" vertical-position="start"></icon-preloader>
+
+      </transition>
+        <!-- end userSomeBets -->
+
+
+	  <!-- begin personalContactCneter -->
+      <transition name="switchFading" appear>
+        <section v-if="personalRoom.currentOpenedView === viewNames.contactCenter && user.contactCenter.length" class="personalRoomContactCenter background-color_lightGray display_grid grid-rows_fill height_fill personalRoomSection">
+          <!-- begin userSomeBetsSorterContainer -->
+          <article class="userSomeBetsSorterContainer parent row wrap v-centered padding_horizontal-tablet padding_vertical-bet-tablet h-between someBetContainer_tablet">
+            <h2 class="font-weight_semibold userContactCenterSorterContainer__title font-size_18">Контакт-центер:</h2>
+
+            <!-- begin userSomeBetsSorter -->
+            <form class="userContactCenterSorter personalRoomSorter display_grid margin-top_base-tabletLess width_fill-tablet grid_three-phoneUp" action="" method="get">
+
+              <base-button :action="openNewThreadPopup" modifier="blue" class-name="userContactCenterSorter__button">
+                Написать сообщение
+              </base-button>
+
+              <sorter-date until-date-name="createdBetsUntilDate" since-date-name="createdBetsSinceDate" styled @set-until-date="contactCenter.untilDate = $event;sortContactCenter();" @set-since-date="contactCenter.sinceDate = $event;sortContactCenter();"></sorter-date>
+
+              <sorter-types :is-shown="personalRoom[contactCenterStatusSorterName].isListOpened" :sorter-types="personalRoom[contactCenterStatusSorterName].types" :on-choose-sorter-type="switchSorterTypeAndSort({
+										sorterTypesName: contactCenterStatusSorterName,
+										sortFunctionName: 'sortContactCenter'
+								})" :switch-display-of-sorter-types="switchSorterTypesDisplayState(contactCenterStatusSorterName)" :current-sorter-type="personalRoom[contactCenterStatusSorterName].currentSorterType" :z-index="3" list-label="Сортировка истории сообщений по статусу сообщения" styled></sorter-types>
+
+
+            </form>
+            <!-- end transactionsSorter -->
+          </article>
+          <!-- end userSomeBetsSorterContainer  -->
+          <!-- begin someBetsTable -->
+
+          <article role="table" class="contactCenterTable background-color_lightGray" aria-describedby="contactCenterTable_description">
+            <h2 id="contactCenterTable_description" class="visible-hidden">
+              Таблица сообщений пользователя
+            </h2>
+
+            <contact-center-table-head></contact-center-table-head>
+
+            <!-- begin userMessageHistory -->
+            <fade-translate-transition-group v-if="!user.choosenThread.hash" :delay="50" :is-leave="false" tag="div" role="rowgroup" class="contactCenterData display_grid font-size_12 v-centered grid-rows_fill">
+
+              <!-- begin userMessage -->
+
+              <contact-center-user-message v-for="(userMessage, index) in getRangeOfData($store.getters['personalRoom/messagesByTimeDecreasing'], 'contactCenter')" :key="index" :data-index="index" :thread-id="userMessage.threadId" :last-answer-date="userMessage.lastAnswerDate" :title="userMessage.title" :status-name="userMessage.status.name" :status-message="userMessage.status.message" :is-shown="userMessage.messageId" class-name="background-color_white"></contact-center-user-message>
+              <!-- end userMessage -->
+            </fade-translate-transition-group>
+            <!-- end userMessageHistory -->
+
+            <!-- begin userThread -->
+            <transition name="fadeTranslateToBottom" appear>
+              <div v-if="user.choosenThread.isOpened" class="userThread grid-rows_fill font-size_12 display_grid background-color_white">
+                <contact-center-user-message :thread-id="user.choosenThread.data.threadId" :last-answer-date="user.choosenThread.data.lastAnswerDate" :title="user.choosenThread.data.title" :status-name="user.choosenThread.data.status.name" :status-message="user.choosenThread.data.status.message" :defined-hash="user.choosenThread.hash" class-name="background-color_lightGray"></contact-center-user-message>
+                <!-- begin userThreadHistory -->
+                <fade-translate-transition-group :delay="50" :is-leave="false" tag="div" class="userThreadHistory display_grid padding-top_quarter">
+                  <persona-message v-for="(personaMessage, index) in getRangeOfData(user.choosenThread.data.dialog, 'choosenThread')" :key="index" :data-index="index" :is-user="personaMessage.isUser" :date="personaMessage.date" :message="personaMessage.message" :companion-name="user.choosenThread.data.companionName" :images="personaMessage.images"></persona-message>
+                </fade-translate-transition-group>
+                <!-- ends userThreadHistory -->
+
+                <!-- begin  threadUserMessage -->
+
+                <form action="#" class="parent row padding_horizontal threadUserMessageContainer wrap" @submit.prevent="postUserMessage">
+
+                  <label for="threadUserMessage" class="margin-right_base-rem font-weight_semibold padding-top_small-rem">
+                    Ответить:
+                  </label>
+                  <!-- begin messageLitter -->
+                  <div class="messageLitter messageLitter_bloated-small background-color_lightGray parent column grow h-end margin-top_small-phone">
+                    <!-- end messageLitter -->
+                    <textarea id="threadUserMessage" v-model="choosenThread.message" class="width_fill grow background-color_null threadUserMessage__input" name="userMessage" placeholder="введите текст сообщения"></textarea>
+                    <!-- begin threadUserMessageFiles -->
+                    <div class="threadUserMessageFiles padding-left_small parent row font-size_10-thread v-centered relative wrap">
+                      <!-- begin file-upload -->
+                      <file-upload ref="upload" v-model="choosenThread.files" :multiple="true" :size="1024 * 1024 * 10" class="threadUserMessageFiles__filesButton margin-top_small-phone" extensions="gif,jpg,jpeg,png,webp" accept="image/png,image/gif,image/jpeg,image/webp" @input-filter="inputFilter" @input-file="inputFile">
+                        Выбор файлов
+                      </file-upload>
+                      <!-- end file-upload -->
+                      <!-- begin  threadUserMessageFiles__list -->
+                      <transition-group v-if="choosenThread.files.length" tag="ul" name="fading" class="grow parent row wrap threadUserMessageFiles__list width_fill-phone margin-top_small-phone">
+
+                        <li v-for="(file, index) in choosenThread.files" :key="file.id" class="margin-right_small margin-top_zero parent v-centered">
+                          <span>[[ file.name ]]&nbsp;</span>
+                          <base-button :action="removeFile(index)" class-name="removeFileButton parent v-s-centered" unstyled>
+                            <icon-close></icon-close>
+                          </base-button>
+                          <span>;</span>
+                        </li>
+                      </transition-group>
+                      <!-- end  threadUserMessageFiles__list -->
+
+                      <p v-else class="margin-top_zero parent v-centered margin-top_small-phone">
+                        Файлы не выбраны
+                      </p>
+                      <base-button :action="() => {}" type="submit" modifier="blue" class-name="margin-left_auto threadUserMessageFiles__button v-s-end margin-top_base-phone">
+
+                        [[ !choosenThread.status.processed ? 'Отправить' : 'Отпаравляем...' ]]
+                      </base-button>
+                      <!-- begin userHint -->
+                      <transition name="fadeTranslateToTop" appear>
+                        <p v-if="choosenThread.hint" class="absolute position_right position-bottom_full-offset color_red padding_small-container background-color_white round_slight shadow_litter font-size_18">
+                          [[ choosenThread.hint ]]
+                        </p>
+                      </transition>
+
+                      <!-- end userHint -->
+                    </div>
+                    <!-- end threadUserMessageFiles -->
+                  </div>
+                </form>
+                <!-- end threadUserMessage -->
+
+                <!-- begin userDialogPagination -->
+                <data-pagination :switch-page="switchPage" :quantity-pages="user.choosenThread.data.dialog | getQuantityPages(paginations.choosenThread.dataPerPage, 'choosenThread')" :current-page-number="paginations.choosenThread.currentPage" data-name="ChoosenThread" class-name="padding_horizontal font-size_11-thread" right-position bloated-pagination is-uncolored></data-pagination>
+                <!-- end userDialogPagination -->
+              </div>
+            </transition>
+            <!-- end userThread -->
+
+            <!-- begin transactionPagesPagination -->
+            <data-pagination :switch-page="switchContactCenterPage" :quantity-pages="paginations.contactCenter.quantityPages" :current-page-number="paginations.contactCenter.currentPage" data-name="ContactCenter"></data-pagination>
+            <!-- end transactionPagesPagination -->
+          </article>
+          <!-- end someBetsTable -->
+
+        </section>
+        <icon-preloader v-else-if="personalRoom.currentOpenedView === viewNames.contactCenter && !user.contactCenter.length" class-name="padding-top_large padding-bottom_large min-height_offset" vertical-position="start"></icon-preloader>
+      </transition>
+      <!-- end personalRoomContactCenter -->
+
+
+
+    </div>
+    <!-- end personalRoom -->
+
+    <!-- begin newThreadPopup -->
+
+    <modal-container v-if="$store.state.popups[newThreadPopupName]" :on-close-modal="closeNewThreadPopup" class-name="relative parent row newThreadPopup" modifier="small" close-button-modifier="normal" small-litter>
+      <form action="" class="newThreadForm formContainer parent column width_fill font-size_12" @submit.prevent="() => {
+	      const newThread = user.newThread;
+	      const message = newThread.message;
+	      const title = newThread.title;
+
+	      if (!message || !title) {
+	        showThreadHint({
+	          hint: 'Чтобы создать тему, следует заполнить оба поля',
+	          moduleName: 'newThread'
+	        });
+
+	        return false;
+	      }
+
+	      // Month/Day/Year Hours/Minutes
+
+	      const timestamp = getCurrentFormatedTime('MM/DD/YYYY HH:mm');
+	      const max = 9999;
+	      const min = 1000;
+	      const threadId = getRandomId(min, max);
+
+	      let requestUrl = '/api/current';
+	      const requestHeaders = {
+	        'X-CSRF-Token': $store.state.csrftoken
+	      };
+	      const requestParams = {
+	        lastAnswerDate: timestamp,
+	        userID: user.id,
+	        threadId,
+	        message,
+	        title
+	      };
+
+	      const requestOptions = {
+	        url: requestUrl,
+	        data: requestParams,
+	        method: 'POST',
+	        headers: requestHeaders
+	      };
+
+	      // const request = axios(requestOptions);
+
+	      const request = window.Promise.resolve({
+	        status: 'ok'
+	      });
+
+	      window.setTimeout(() => {
+	        request.then(response => {
+	          const isError = response.status !== 'ok';
+
+	          const newThreadData = {
+	            status: {
+	              message: 'Идёт обработка проблемы',
+	              name: ''
+	            },
+	            lastAnswerDate: timestamp,
+	            hash: `${threadId}`,
+	            date: timestamp,
+	            title,
+	            threadId
+	          };
+
+	          $store.dispatch('personalRoom/makeNewThreadAndOpenThread', {
+	            threadData: newThreadData,
+	            threadId,
+	            message
+	          });
+	        });
+	      }, 1000);
+
+
+	    }">
+        <label class="newThreadForm__label inputLabel" for="threadThemeInput">
+          Заголовок сообщения
+        </label>
+        <input id="threadThemeInput" v-model="user.newThread.title" type="text" class="newThreadForm__input input" name="threadTheam" placeholder="Моя проблема">
+        <label for="threadThemeInput" class="newThreadForm__label inputLabel">
+          Текст сообщения
+        </label>
+        <textarea id="threadMessageInput" v-model="user.newThread.message" class="newThreadForm__input newThreadForm__input_textarea input margin-bottom_large" name="threadMessage" placeholder="У меня есть проблема и, сейчас, я её опишу! В далёкой далёкой галактике..."></textarea>
+
+        <!-- begin newThreadFormSubmit -->
+        <div class="parent h-end relative width_fill newThreadFormSubmit">
+          <base-button type="submit" modifier="blue" class-name="newThreadFormSubmit__button formButton">
+            Отправить
+          </base-button>
+          <transition name="fadeTranslateToTop" appear>
+            <p v-if="newThread.hint" class="absolute position_right position-bottom_full-offset color_red padding_small-container background-color_white round_slight shadow_litter font-size_18 newThreadFormSubmit__hint">
+              [[ newThread.hint ]]
+            </p>
+          </transition>
+          <!-- end userHint -->
+        </div>
+        <!-- end newThreadFormSubmit -->
+      </form>
+    </modal-container>
+    <!-- end newThreadPopup -->
+
+</personal-room>
+
+
+        <!-- begin popup -->
+<div class="display_contents" id="matchPopup" v-if="$store.state.popups[matchPopupName]">
+  <modal-container :is-shown="$store.state.popups[matchPopupName]" :is-data-updated="$store.getters['popups/isMatchDataUpdated']" :on-close-modal="closeMatchPopup" :on-open="() => {
+
+        const requstMethod = 'post';
+        const requestUrl = $store.state.bets.choosenMatchUrl;
+        const requestHeaders = {
+          'X-CSRF-Token': $store.state.csrftoken
+        };
+        const requestOptions = {
+          url: requestUrl,
+          data: {},
+          method: requstMethod,
+          headers: requestHeaders
+        };
+
+        // https://github.com/axios/axios
+        // const request = axios(requestOptions);
+
+        const request = window.Promise.resolve({
+          status: 'ok',
+          // html должен содержать <modal-container> с его содержимым.
+          staticTemplate: $store.state.document.getElementById('matchPopupSample').innerHTML
+        });
+
+        // Тестовая задержка.
+        window.setTimeout(() => {
+          request.then((response) => {
+            log(response);
+            const generatedHtml = response.staticTemplate;
+
+            renderStaticTemplate(generatedHtml);
+
+            function renderStaticTemplate(html) {
+              const matchPopup = $store.state.document.getElementById('matchPopup');
+
+              matchPopup.innerHTML = html;
+
+              setInitedStateOfPopup();
+              rerenderMatchPopup();
+            }
+          }); // end request
+
+        }, 500);
+      }" class-name="modalMatchContainer">
+    <transition name="fading">
+      <article v-if="$store.getters['popups/isMatchDataUpdated']" class="popupMatch">
+          <bets-match-popup-header league-name="The Super League Name" league-stage="Signification" match-date="03/05/2018 9:00">
+
+              <match-teams :left-team-ratio="1.3" left-team-name="Wings Gaming" left-team-logo="/images/logos/wings.png" left-team-country="/images/flags/ch.png" :right-team-ratio="1.1" right-team-name="Team Liquid" right-team-logo="/images/logos/teamliquid.png" right-team-country="/images/flags/eu.png" :match-url="$store.state.bets.choosenMatchUrl" class-name="popupMatchTeams padding-bottom_base" team-name-class="text_centered-phone-force" team-logo-container-class="display_grid popupMatchLogos" team-logo-class="max-width_40 parent centered" ratio-container-class="max-width_28" versus-class="popupTeamsVersus" left-team-name-class="margin-top_small-tabletLess " right-team-class="popupRightTeam popupTeam translate-left_small" left-team-class="popupLeftTeam popupTeam" names-beneath-logo is-big-versus is-small-ratio></match-teams>
+
+              <match-streams :channels="[
+                  'nuke73',
+                  'food',
+                  'welovegames',
+                  'c_a_k_e'
+                ]" class-name="popupMatchStreams"></match-streams>
+          </bets-match-popup-header>
+
+        <!-- Декоративные метки -->
+        <bets-match-popup-labels></bets-match-popup-labels>
+        <!-- Конец декоративным меткам -->
+
+        <!-- begin matchStatus -->
+        <div class="matchStatus">
+            <!-- Заголовки таблицы -->
+            <bets-match-popup-bets-header></bets-match-popup-bets-header>
+            <!-- Конец заголовкам -->
+            <team-status-bar team-name="Team Liquid" team-status="Победа" team-logo="/images/logos/teamliquid.png" :second-accept-ratio="1.618" :first-accept-ratio="1.4" :third-accept-ratio="1.2" @accept-new-bet-first="(acceptBetValues) => {
+                log(acceptBetValues);
+                log(matchNotification);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'Чтобы сделать ставку, вы должны авторизироваться.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }"></team-status-bar>
+            <team-status-bar team-name="Wings Gaming" team-status="Поражение" team-logo="/images/logos/wings.png" :first-accept-ratio="1.1" :second-accept-ratio="1.2" :third-accept-ratio="1.3"></team-status-bar>
+            <team-status-bar :team-name="''" team-status="Ничья" :team-logo="''" :first-accept-ratio="1" :second-accept-ratio="1" :third-accept-ratio="1"></team-status-bar>
+        </div>
+        <!-- end matchStatus -->
+      </article>
+      <!-- end meta -->
+      <icon-preloader v-else class="min-height_offset"></icon-preloader>
+    </transition>
+  </modal-container>
+</div>
+
+
+
+
+
+<div id="matchPopupSample" hidden>
+  <modal-container :is-shown="$store.state.popups[matchPopupName]" :is-data-updated="$store.getters['popups/isMatchDataUpdated']" :on-close-modal="closeMatchPopup" :on-open="() => {
+
+        const requstMethod = 'post';
+        const requestUrl = $store.state.bets.choosenMatchUrl;
+        const requestHeaders = {
+          'X-CSRF-Token': $store.state.csrftoken
+        };
+        const requestOptions = {
+          url: requestUrl,
+          data: {},
+          method: requstMethod,
+          headers: requestHeaders
+        };
+
+        // https://github.com/axios/axios
+        // const request = axios(requestOptions);
+
+        const request = window.Promise.resolve({
+          status: 'ok',
+          // html должен содержать <modal-container> с его содержимым.
+          staticTemplate: $store.state.document.getElementById('matchPopupSample').innerHTML
+        });
+
+        // Тестовая задержка.
+        window.setTimeout(() => {
+          request.then((response) => {
+            log(response);
+            const generatedHtml = response.staticTemplate;
+
+            renderStaticTemplate(generatedHtml);
+
+            function renderStaticTemplate(html) {
+              const matchPopup = $store.state.document.getElementById('matchPopup');
+
+              matchPopup.innerHTML = html;
+
+              setInitedStateOfPopup();
+              rerenderMatchPopup();
+            }
+          }); // end request
+
+        }, 500);
+      }" class-name="modalMatchContainer">
+    <transition name="fading">
+      <article v-if="$store.getters['popups/isMatchDataUpdated']" class="popupMatch">
+          <bets-match-popup-header league-name="The Super League Name" league-stage="Signification" match-date="03/05/2018 9:00">
+
+              <match-teams :left-team-ratio="1.3" left-team-name="Wings Gaming" left-team-logo="/images/logos/wings.png" left-team-country="/images/flags/ch.png" :right-team-ratio="1.1" right-team-name="Team Liquid" right-team-logo="/images/logos/teamliquid.png" right-team-country="/images/flags/eu.png" :match-url="$store.state.bets.choosenMatchUrl" class-name="popupMatchTeams padding-bottom_base" team-name-class="text_centered-phone-force" team-logo-container-class="display_grid popupMatchLogos" team-logo-class="max-width_40 parent centered" ratio-container-class="max-width_28" versus-class="popupTeamsVersus" left-team-name-class="margin-top_small-tabletLess " right-team-class="popupRightTeam popupTeam translate-left_small" left-team-class="popupLeftTeam popupTeam" names-beneath-logo is-big-versus is-small-ratio></match-teams>
+
+              <match-streams :channels="[
+                  'nuke73',
+                  'food',
+                  'welovegames',
+                  'c_a_k_e'
+                ]" class-name="popupMatchStreams"></match-streams>
+          </bets-match-popup-header>
+
+        <!-- Декоративные метки -->
+        <bets-match-popup-labels></bets-match-popup-labels>
+        <!-- Конец декоративным меткам -->
+
+        <!-- begin matchStatus -->
+        <div class="matchStatus">
+            <!-- Заголовки таблицы -->
+            <bets-match-popup-bets-header></bets-match-popup-bets-header>
+            <!-- Конец заголовкам -->
+            <team-status-bar team-name="Team Liquid" team-status="Победа" team-logo="/images/logos/teamliquid.png" :second-accept-ratio="1.618" :first-accept-ratio="1.4" :third-accept-ratio="1.2" @accept-new-bet-first="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'isNotLogged',
+                  serverMessage: 'Первая ставка с красным сообщением - обозначает ошибку.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @accept-new-bet-second="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'Вторая ставка с синим сообщением показывает успех операции.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }" @accept-new-bet-third="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+            <team-status-bar team-name="Wings Gaming" team-status="Поражение" team-logo="/images/logos/wings.png" :first-accept-ratio="1.1" :second-accept-ratio="1.2" :third-accept-ratio="1.3" @accept-new-bet-first="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'isNotLogged',
+                  serverMessage: 'Первая ставка с красным сообщением - обозначает ошибку.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @accept-new-bet-second="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'Вторая ставка с синим сообщением показывает успех операции.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }" @accept-new-bet-third="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+            <team-status-bar :team-name="''" team-status="Ничья" :team-logo="''" :first-accept-ratio="1" :second-accept-ratio="1" :third-accept-ratio="1" @accept-new-bet-first="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'isNotLogged',
+                  serverMessage: 'Первая ставка с красным сообщением - обозначает ошибку.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+
+                    log(requestStatus, 'after-request');
+                  });
+                }, 500);
+              }" @accept-new-bet-second="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'Вторая ставка с синим сообщением показывает успех операции.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }" @accept-new-bet-third="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  serverMessage: 'В чём смысл жизни? Ответ: 42.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }" @offer-new-bet="(acceptBetValues) => {
+                log(acceptBetValues);
+
+                openMatchNotificationPopup();
+
+                const formName = matchNoftificationPopupName;
+                const requestOptions = {
+                  headers: {
+                    'X-CSRF-Token': $store.state.csrftoken
+                  }
+                };
+
+                // const request = axios(requestOptions);
+
+                const request = window.Promise.resolve({
+                  status: 'bad',
+                  serverMessage: 'Ваше предложенная ставка не была принята. Чтобы её принять, авторизуйтесь, либо пройдите регистрацию.'
+                });
+
+                window.setTimeout(() => {
+                  request.then(response => {
+                    const isError = response.status !== 'ok';
+                    const message = response.serverMessage;
+                    const responseOptions = {
+                      message,
+                      isError,
+                      formName
+                    };
+
+                    $store.dispatch(
+                      'authorization/showResponseMessage',
+                      responseOptions
+                    );
+                  });
+                }, 500);
+              }"></team-status-bar>
+        </div>
+        <!-- end matchStatus -->
+      </article>
+      <!-- end meta -->
+      <icon-preloader v-else class="min-height_offset"></icon-preloader>
+    </transition>
+  </modal-container>
+</div>
+
+        <modal-container id="matchNotificationPopup" v-if="$store.state.popups[matchNoftificationPopupName]" :on-close-modal="closeMatchNotificationPopup" :on-open="() => {
+      log(requestStatus, 'on-open');
+  }" class-name="modalMatchContainer" is-big-close-button>
+      <transition name="fadeTranslateToTop">
+        <!-- start successBlock -->
+        <div v-if="requestStatus.message" :class="{
+            'successBlock formContainer': true,
+            'color_blue': requestStatus.isSuccess,
+            'color_red': requestStatus.isError
+          }" aria-live="assertive" role="alert" aria-labeledby="popupNotificationDescription">
+          <div id="popupNotificationDescription" aria-hidden="true" hidden>Сообщение для пользователя</div>
+          <p v-html="requestStatus.message">
+          <!-- begin authoriaztionButtons -->
+          <div v-if="requestStatus.isError" class="parent row nowrap margin-top_increased font-size_12 centered">
+              <base-button :action="openAuthPopup('login')" class-name="margin-right_base" modifier="blue">
+               Войти
+              </base-button>
+              <base-button :action="openAuthPopup('registration')" modifier="blue">
+               Регистрация
+              </base-button>
+          </div>
+        </div>
+        <!-- end meta -->
+
+    </transition>
+    <!-- end successBlock -->
+</modal-container>
+
+
+        <svg aria-hidden="true" role="img" hidden="">
+            <g id="pagePreloader" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-width="2">
+                <circle cx="22" cy="22" r="1">
+                    <animate attributename="r" begin="0s" calcmode="spline" dur="1.8s" keysplines="0.165, 0.84, 0.44, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 20">
+                    </animate>
+                    <animate attributename="stroke-opacity" begin="0s" calcmode="spline" dur="1.8s" keysplines="0.3, 0.61, 0.355, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 0">
+                    </animate>
+                </circle>
+                <circle cx="22" cy="22" r="1">
+                    <animate attributename="r" begin="-0.9s" calcmode="spline" dur="1.8s" keysplines="0.165, 0.84, 0.44, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 20">
+                    </animate>
+                    <animate attributename="stroke-opacity" begin="-0.9s" calcmode="spline" dur="1.8s" keysplines="0.3, 0.61, 0.355, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 0">
+                    </animate>
+                </circle>
+            </g>
+        </svg>
+
+        <script>!function(){"use strict";var o=Boolean("localhost"===window.location.hostname||"[::1]"===window.location.hostname||window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/));window.addEventListener("load",function(){"serviceWorker"in navigator&&("https:"===window.location.protocol||o)&&navigator.serviceWorker.register("service-worker.js").then(function(o){o.onupdatefound=function(){if(navigator.serviceWorker.controller){var n=o.installing;n.onstatechange=function(){switch(n.state){case"installed":break;case"redundant":throw new Error("The installing service worker became redundant.")}}}}}).catch(function(o){console.error("Error during service worker registration:",o)})})}();</script>
+        <!-- built files will be auto injected -->
+    <script type="text/javascript" src="/js/manifest.js"></script><script type="text/javascript" src="/js/vendor.js"></script><script type="text/javascript" src="/js/app.js"></script></body>
+</html>

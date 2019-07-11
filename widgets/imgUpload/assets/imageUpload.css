@@ -1,0 +1,32 @@
+.img-upl img.avatar,
+.img-upl img.avatar[src=""] {
+  width: 50px;
+  height: 50px;
+}
+.img-upl img.upload-image {
+  cursor: pointer;
+}
+.img-upl .img-upl-modal {
+  display: none;
+}
+.img-upl .modal-content input#image-upload {
+  display: none;
+}
+.img-upl .modal-body {
+  text-align: center;
+}
+.img-upl .modal-body img.loading {
+  width: 30px;
+}
+.img-upl .modal-body .list-view div.items {
+  max-height: 500px;
+  overflow: auto;
+  text-align: center;
+}
+.img-upl .modal-body .list-view div.items span.image-item {
+  display: inline-block;
+  padding: 10px;
+}
+.img-upl .modal-body .list-view div.pagin {
+  text-align: center;
+}

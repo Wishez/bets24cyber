@@ -1,0 +1,30 @@
+.vdp-datepicker__calendar .cell:not(.blank):not(.disabled).day:hover, .vdp-datepicker__calendar .cell:not(.blank):not(.disabled).month:hover, .vdp-datepicker__calendar .cell:not(.blank):not(.disabled).year:hover
+	border-color: $blue $i
+
+.dateInputContainer
+	display: inline-block
+
+	@include breakpoint($tablet)
+	max-width: 40%
+	@include breakpoint($desktop)
+	max-width: em(50, 12)
+	@include breakpoint($tablet-less)
+	max-width: 40%
+
+	&__input
+	  max-width: 100%
+	  cursor: pointer
+	  padding: em(8, 12) 0
+	  border-radius: 25px
+	  text-indent: 8px
+	
+	& .vdp-datepicker__clear-button
+		position: absolute
+		top: -3px
+		right: 7px
+		font-size: 21px
+
+.datePickerChevron
+  &_until
+    right: em(20, 10)
+  &_since

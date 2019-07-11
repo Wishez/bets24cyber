@@ -1,0 +1,70 @@
+.banner
+    height: 1px
+
+    @include breakpoint($tablet)
+      min-height: 221px
+
+    @include breakpoint($tablet-less)
+      min-height: 340px
+
+    .imageContainer
+      @include breakpoint($betsTabletLess)
+        min-height: 250px
+      
+      @include breakpoint($phone-less)
+        min-height: 360px
+
+    .container
+
+      @include breakpoint($betsTabletLess)
+        padding-right: 2em
+        justify-content: center
+
+      @include breakpoint($tablet)
+        padding-left: 4em
+
+      @include breakpoint($tablet-less)
+        padding-bottom: 1.5em
+        padding-left: 2em
+        min-height: 340px
+
+      @include breakpoint($phone-less)
+        min-height: 360px
+
+
+    &__section
+      max-width: 850px
+
+    &__paragraph
+      max-width: em(535, 20)
+
+      @include breakpoint($phone)
+        font-size: em(18)
+
+      @include breakpoint($tablet)
+        font-size: em(20)
+        
+      @include breakpoint($phone-less)
+        font-size: 4.5vw
+
+    &__title
+      @include breakpoint($phone)
+        font-size: em(28)
+
+      @include breakpoint($tablet)
+        font-size: em(30)
+
+    &__button
+      @include breakpoint($phone-less)
+        font-size: 4vw
+        margin-top: -2em
+
+      font-size: em(25.4)
+      min-width: em(270, 26.4)
+
+      @include breakpoint($tablet-less)
+        margin-top: .5em
+
+      @include breakpoint($desktop)
+          position: relative
+          left: em(-103, 26.4)

@@ -1,0 +1,91 @@
+<modal-container
+  id="notificationPopup"
+  v-if="$store.state.popups[noftificationPopupName]"
+  :on-close-modal="closeNotificationPopup"
+  :on-open="() => {
+      log(requestStatus, 'on-open');
+  }"
+  class-name="modalMatchContainer"
+  is-big-close-button
+>
+      <transition name="fadeTranslateToTop" >
+        <!-- start successBlock -->
+        <div
+          v-if="requestStatus.message"
+          :class="{
+            'successBlock formContainer': true,
+            'color_blue': requestStatus.isSuccess,
+            'color_red': requestStatus.isError
+          }"
+          aria-live="assertive"
+          role="alert"
+          aria-labeledby="popupNotificationDescription"
+        >
+          <div
+            id="popupNotificationDescription"
+            aria-hidden="true"
+            hidden>Сообщение для пользователя</div>
+          <p
+            v-html="requestStatus.message"
+          />
+          <!-- begin authoriaztionButtons -->
+          <div v-if="requestStatus.isError && requestStatus.isAuthorizationBlock && !$store.state.personalRoom.user.isLogged"
+              class="parent row nowrap margin-top_increased font-size_12 centered">
+              <base-button
+                  :action="openAuthPopup('login')"
+                  class-name="margin-right_base"
+                  modifier="blue"
+              >
+               Войти
+              </base-button>
+              <base-button
+                  :action="openAuthPopup('registration')"
+                  modifier="blue"
+              >
+               Регистрация
+              </base-button>
+          </div>
+
+          <div v-if="requestStatus.isActionsBlock && $store.state.personalRoom.user.isLogged"
+              class="parent row nowrap margin-top_increased font-size_12 centered">
+              <base-button
+                  :action="() => {
+                    log(newUserBet);
+                  }"
+                  class-name="margin-right_base"
+                  modifier="green"
+              >
+               Оплатить
+              </base-button>
+              <base-button
+                  :action="closeNotificationPopup"
+                  modifier="blue"
+              >
+               Отложить
+              </base-button>
+          </div>
+
+          <div v-if="requestStatus.isConfirmBlock && $store.state.personalRoom.user.isLogged"
+              class="parent row nowrap margin-top_increased font-size_12 centered">
+              <base-button
+                  :action="() => {
+                    log(newUserBet);
+                  }"
+                  class-name="margin-right_base"
+                  modifier="green"
+              >
+               Да
+              </base-button>
+              <base-button
+                  :action="closeNotificationPopup"
+                  modifier="blue"
+              >
+               Нет
+              </base-button>
+          </div>
+        </div>
+        <!-- end meta -->
+
+    </transition>
+    <!-- end successBlock -->
+</modal-container>

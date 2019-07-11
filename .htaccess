@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+</IfModule>
+<IfModule mod_rewrite.c>
+
+	RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+	RewriteRule ^(.*)$ http:\/\/%1/$1 [R=301,QSA,L]
+
+
+	RewriteCond  %{DOCUMENT_ROOT}/web/$1 -f
+	RewriteRule ^(.*)$ /web/$1 [L]
+
+    RewriteCond %{REQUEST_URI} !^/web/
+    RewriteRule ^.*$ web/index.php
+
+
+</IfModule>
+ 

@@ -1,0 +1,34 @@
+@import "./conf/_fonts.sass"
+
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff)
+  $src: null
+  $extmods: ( eot: "?", svg: "#" + str-replace($name, " ", "_"))
+  $formats: (otf: "opentype", ttf: "truetype")
+
+  @each $ext in $exts 
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext)
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext)
+    $src: append($src, url(quote($path + "." + $extmod)) format(quote($format)), comma)
+  
+  
+
+  @font-face 
+    font-family: quote($name)
+    font-style: $style
+    font-weight: $weight
+    src: $src
+    font-display: swap
+  
+
+$fontdir: '../fonts/'
+
+@include font-face($mainFontName, '#{$fontdir}OpenSans/OpenSans', normal, normal)
+@include font-face($mainFontName, '#{$fontdir}OpenSans/OpenSans-Semibold', 600, normal)
+@include font-face($mainFontName, '#{$fontdir}OpenSans/OpenSans-Bold', bold, normal)
+@include font-face($mainFontName, '#{$fontdir}OpenSans/OpenSans-Extrabold', 700, normal)
+@include font-face($mainFontName, '#{$fontdir}OpenSans/OpenSans-Light', 200, normal)
+
+@include font-face($decorativeFontName, '#{$fontdir}MyriadPro/MyriadPro-Regular', normal, normal)
+@include font-face($decorativeFontName, '#{$fontdir}MyriadPro/MyriadPro-Bold', bold, normal)
+@include font-face($decorativeFontName, '#{$fontdir}MyriadPro/MyriadPro-Semibold', 600, normal)
+

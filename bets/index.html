@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+        <title>bets24cyber</title>
+
+        <% for (var chunk of webpack.chunks) {
+        for (var file of chunk.files) {
+          if (file.match(/\.(js|css)$/)) { %>
+        <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
+    </head>
+    <style>
+        .curtain {
+            position: fixed;
+            background: #fff;
+            top: 0;
+            left: 0;
+            display: flex;
+            font-size: 2.5rem;
+            justify-content: center;
+            align-items: center;
+            min-width: 100vw;
+            min-height:  100vh;
+            z-index: 1000;
+            color: #333;
+        }
+    </style>
+    <body>
+        <noscript>
+          This is your fallback content in case JavaScript fails to load.
+        </noscript>
+        <div class="layouts">
+            <%= require('text-loader!@/views/header.html') %>
+
+            <%= require('text-loader!@/views/banner.html') %>
+
+            <%= require('text-loader!@/views/main.html') %>
+
+            <%= require('text-loader!@/views/footer.html') %>
+        </div>
+
+        <%= require('text-loader!@/views/personalRoom.html') %>
+
+        <%= require('text-loader!@/views/matchPopup.html') %>
+
+        <%= require('text-loader!@/views/notificationPopup.html') %>
+
+
+        <svg
+            aria-hidden="true"
+            role="img"
+            hidden="">
+            <g id="pagePreloader" stroke="currentColor"  fill="none" fill-rule="evenodd" stroke-width="2">
+                <circle cx="22" cy="22" r="1">
+                    <animate attributename="r" begin="0s" calcmode="spline" dur="1.8s" keysplines="0.165, 0.84, 0.44, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 20">
+                    </animate>
+                    <animate attributename="stroke-opacity" begin="0s" calcmode="spline" dur="1.8s" keysplines="0.3, 0.61, 0.355, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 0">
+                    </animate>
+                </circle>
+                <circle cx="22" cy="22" r="1">
+                    <animate attributename="r" begin="-0.9s" calcmode="spline" dur="1.8s" keysplines="0.165, 0.84, 0.44, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 20">
+                    </animate>
+                    <animate attributename="stroke-opacity" begin="-0.9s" calcmode="spline" dur="1.8s" keysplines="0.3, 0.61, 0.355, 1" keytimes="0; 1" repeatcount="indefinite" values="1; 0">
+                    </animate>
+                </circle>
+            </g>
+        </svg>
+
+        <svg aria-hidden="true" role="img" hidden="">
+            <g id="arrowIcon" fill="currentColor">
+                <polygon points="45,15 95,95 5,95 45,15" />
+            </g>
+        </svg>
+
+        <%= htmlWebpackPlugin.options.serviceWorkerLoader %>
+        <!-- built files will be auto injected -->
+    </body>
+</html>

@@ -1,0 +1,548 @@
+.pointer
+	cursor: pointer
+.relative
+	@extend %relative
+.absolute
+	@extend %absolute
+.fixed
+	position: fixed
+	z-index: 10
+.static
+	&_xs
+		@include breakpoint($xs)
+			position: static
+
+.cropedText
+	overflow: hidden
+	text-overflow: ellipsis
+	display: flex
+	display: -webkit-box
+	-webkit-box-orient: vertical
+	&_6
+		-webkit-line-clamp: 6
+		height: (6px * 1.5 * 18)
+
+.cropedLine
+	white-space: nowrap
+	text-overflow: ellipsis
+	overflow: hidden
+
+.visible-hidden
+	white-space: nowrap
+	overflow: hidden
+	clip: rect(1px, 1px, 1px, 1px)
+	width: 1px
+	height: 1px
+	position: absolute
+[hidden]
+	display: none
+.circle
+	border-radius: 50%
+// Shadows
+.iconShadow
+	box-shadow: 1px 1px 2px 0 $shadow
+.materialShadow
+	box-shadow: 2px 4px 6px 0 $shadow
+.cascadingShadow
+	box-shadow: 0 4px 15px 0 $shadow
+.hover
+	&-color
+		&_white:hover
+			color: $white
+	&-backgroundColor
+		&_burgund:hover
+			background-color: $burgund
+.after:after
+.after_bsolute:after
+.pseudo
+
+	&_elements
+		&:after, &:before
+			content: "" $i
+	&_elements--absolute
+		&:after, &:before
+			position: absolute
+
+
+	&_after
+		&:after
+			content: ""
+		&--absolute
+			&:after
+				position: absolute
+		&--negativeIndex
+			&:after
+				z-index: -1
+		&--round
+			&:after
+				border-radius: 50%
+		&--fullWidth
+			&:after
+				width: 100%
+		&--basePosition
+			&:after
+				left: 0
+				right: 0
+		&--fullHeight
+			&:after
+				height: 100%
+
+	&_before
+		&:before
+			content: ""
+		&--absolute
+			&:before
+				position: absolute
+
+.height
+	&_full
+		height: 100%
+			/* style */
+.padding
+	&Container
+		padding: 1em
+		&_horizontal
+			padding-left: 1em
+			padding-right: 1em
+		&_vertical
+			padding-top: 1em
+			padding-bottom: $s29
+
+	&Right
+		&_47
+			padding-right: $s47
+		&_xs
+			&-zero
+				@include breakpoint($xs)
+					padding-right: 0
+	&Bottom
+		&_47
+			padding-bottom: $s47
+.visible-hidden-smLess
+	@include breakpoint($sm-less)
+		white-space: nowrap
+		overflow: hidden
+		clip: rect(1px, 1px, 1px, 1px)
+		width: 1px
+		height: 1px
+		position: absolute
+.margin
+	&Left
+		&_29
+			margin-left: $s29
+		&_47
+			margin-left: $s47
+		&_18
+			margin-left: $s18
+		&_xs-18
+			@include breakpoint($xs)
+				margin-left: $s18
+	&Right
+		&_29
+			margin-right: $s29
+		&_47
+			margin-right: $s47
+		&_18
+			margin-right: $s18
+		&_xs-18
+			@include breakpoint($xs)
+				margin-right: $s18
+	&Top
+		&_zero
+			margin-top: 0
+			&-force
+				margin-top: 0 $i
+		&_11
+			margin-top: $s11
+		&_18
+			margin-top: $s18
+		&_29
+			margin-top: $s29
+		&_47
+			margin-top: $s47
+		&_77
+			margin-top: $s77
+		&_xs-11
+			@include breakpoint($xs)
+				margin-top: $s11
+		&_xs-18
+			@include breakpoint($xs)
+				margin-top: $s18
+	&Bottom
+
+		&_29
+			margin-bottom: $s29
+		&_47
+			margin-bottom: $s47
+		&_18
+			margin-bottom: $s18
+		&_xs-11
+			@include breakpoint($xs)
+				margin-bottom: $s11
+		&_xs-18
+			@include breakpoint($xs)
+				margin-bottom: $s18
+		&_xxs-11
+			@include breakpoint($xxs)
+				margin-bottom: $s11
+.font
+	&-size
+		&_11
+			font-size: $s11
+		&_29
+			font-size: $s29
+		&_47
+			font-size: $s47
+		&_25
+			font-size: $s25
+		&_18
+			font-size: $s18
+		&_16
+			font-size: $s16
+		&_77
+			font-size: $s77
+		&_xs-41
+			@include breakpoint($xs)
+				font-size: $s41
+		&_xs-18
+			@include breakpoint($xs)
+				font-size: $s18
+
+.index
+	&_negative
+		z-index: -1
+	&_positive
+		z-index: 1
+	&_big
+		z-index: 10
+.position
+	&Top
+		&_11
+			top: $s11
+		&_18
+			top: $s18
+	&Bottom
+		&_full-and-offset
+			bottom: calc(100% + #{$s6})
+		&_zero
+			bottom: 0
+		&_11
+			bottom: $s11
+		&_18
+			bottom: $s18
+		&_29
+			bottom: $s29
+		&_negative-18
+			bottom: -$s18
+	&Left
+		&_zero
+			left: 0
+		&_18
+			left: $s18
+		&_47
+			left: $s47
+		&_negative-18
+			left: -$s18
+		&_xs-18
+			@include breakpoint($xs)
+				left: $s18
+		&_xs-77
+			@include breakpoint($xs)
+				left: $s77
+		&_xxs-47
+			@include breakpoint($xxs)
+				left: $s47
+	&Right
+		&_11
+			right: $s11
+		&_18
+			right: $s18
+		&_29
+			right: $s29
+		&_47
+			right: $s47
+		&_xs
+			&-auto
+				right: auto
+	&_horizontal-centered
+		&-xs
+			@include breakpoint($xs)
+				left: 50%
+				transform: translateX(-50%)
+.baseRound
+	border-radius: 3px
+.semibold
+	font-weight: 600
+.bold
+	font-weight: bold
+.light
+	font-weight: 300
+.italic
+	font-style: italic
+.normalStyle
+	font-style: normal
+.normalWeight
+	font-weight: normal
+.whiteColor
+	color: $white
+.pinkColor
+	color: $pink
+.burgundColor
+	color: $burgund
+.darkGrayColor
+	color: $darkGray
+.background-color
+	&_pink
+		background-color: $pink
+.visible-hidden-xs
+	@include breakpoint($xs)
+		white-space: nowrap
+		overflow: hidden
+		clip: rect(1px, 1px, 1px, 1px)
+		width: 1px
+		height: 1px
+		position: absolute
+
+
+
+.whiteTextShadow
+	text-shadow: -2px 1px 13px rgba(255, 255, 255, .8)
+.textShadow
+	text-shadow: -2px 1px 13px rgba(0, 0, 0, 0.35)
+
+.cascadeShadow
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4)
+	
+.restrictBlock
+	margin: auto
+	max-width: em(1350)
+
+.fewRound
+	border-radius: 3px
+.whiteBackground
+	background-color: #fff
+.darkGrayBackground
+	background-color: $darkGray
+.orderButtons
+	@extend %relative
+.shown_element
+	opacity: 1
+	tranition: opcaity .3s ease-in
+.lazy
+	will-change: opacity
+	opacity: 0
+
+.unstyledList > li
+	margin-top: 0
+	&:before
+		content: none
+
+::-webkit-scrollbar-track
+	// -webkit-box-shadow: inset 0 0 6px $shadow
+	// background-color: $darkGray
+	// padding: 0 1px
+
+::-webkit-scrollbar
+	opacity: .1
+	width: 14px
+	background-color: transparent
+	height: 75px
+::-webkit-scrollbar-thumb
+	border: 5px solid rgba(0, 0, 0, 0);
+	height: 75px
+	margin: 0 auto
+	background-color: $burgund
+	box-shadow: -2px 2px 6px 0 $shadow
+::-webkit-scrollbar-button
+    width: 0
+    height: 0
+    display: none
+
+::-webkit-scrollbar-corner
+    background-color: transparent
+
+.text
+	&Centered
+		text-align: center
+		&_xs
+			@include breakpoint($xs)
+				text-align: center
+
+	&Right
+		text-align: right
+	&_left
+		text-align: left
+	&_nowrap
+		white-space: nowrap
+
+
+
+.container
+	padding: 0 1.5rem
+	margin-right: auto
+	margin-left: auto
+
+.input
+	border-radius: 4px
+	border: 1px solid $gray
+	background-color: $white
+	padding: .75rem .5rem
+
+
+input[type=number]::-webkit-inner-spin-button
+	-webkit-appearance: none
+	display: none
+	// color: $darkGray
+	// text-align:center
+	// position:relative
+	// // background: transparent url('./../src/images/icons/arrows.png') no-repeat 50% 50%
+	// width: em(14)
+	// height: em(14)
+	// padding: em(4)
+	// position: relative
+	// right: 0px
+	// visibility: visible
+	// opacity: .7
+	// transition: opacity .3s ease
+	// will-change: opacity
+	// cursor:pointer
+	// z-index: 2
+div[data-id="tooltip"]
+	font-size: 1rem
+	z-index: 100
+input[type=number]:hover::-webkit-inner-spin-button
+	// opacity: 1
+	// cursor:pointer
+
+
+.serverError
+	color: $red
+.serverError, .successfull
+	font-weight: bold
+
+.slowFade
+	&-enter-active, &-appear-active, &-leave-active
+		transition: opacity 1.5s ease-in
+		will-change: opacity
+	&-enter, &-leave-to, &-appear-to
+		opacity: 0
+	&-enter-active, &-leave-active
+		transition: opacity 1.5s ease-in-out
+		will-change: opacity
+	&-enter, &-leave-to
+		opacity: 0
+.fade
+	&-appear-active, &-leave-active, &-enter-active
+		transition: opacity .5s ease-in-out
+		will-change: opacity
+	&-enter, &-leave-to, &-appear-to
+		opacity: 0
+
+	&-enter-active, &-leave-active
+		transition: opacity .5s ease-in-out
+  		will-change: opacity
+	&-enter, &-leave-to
+		opacity: 0
+.topMargin
+	&_29
+		margin-top: $s29 $i
+	&_18
+		margin-top: $s18 $i
+	&_11
+		margin-top: $s11 $i
+.zeroTopMargin
+	margin-top: 0 $i
+
+.spacing
+	&_12
+		letter-spacing: .12em
+	&_15
+		letter-spacing: .15em
+	&_5
+		letter-spacing: .05em
+
+// .fadeTranslateToTop
+// 	&-enter, &-leave-to
+// 		opacity: 0
+// 		transform: translateY(1.5rem)
+
+// 	&-enter-active, &-leave-active
+// 		transition: opacity .2s ease-in, transform .2s ease-in-out
+// 		transform: translateY(0)
+//   		will-change: opacity, transform
+
+// 	&-enter, &-leave-to
+// 		transform: translateY(1.5rem)
+// 		opacity: 0
+// .fadeTranslateFromTop
+// 	&-enter, &-leave-to
+// 		opacity: 0
+// 		transform: translateY(-1.5rem)
+
+// 	&-enter-active, &-leave-active
+// 		transition: opacity .2s ease-in, transform .2s ease-in-out
+// 		transform: translateY(0)
+//   		will-change: opacity, transform
+
+// 	&-enter, &-leave-to
+// 		transform: translateY(-1.5rem)
+// 		opacity: 0
+
+// .fading
+// 	&-appear
+// 		opacity: 0.1
+// 		will-change: opacity
+// 		&.fading-appear-active
+// 			transition: opacity 1s ease-in
+// 			opacity: 1
+// 	&-enter
+// 		opacity: 0.1
+// 		will-change: opacity
+// 		&.fading-enter-active
+// 			transition: opacity .5s ease-in
+// 			opacity: 1
+// 	&-leave
+// 		opacity: 1
+// 		will-change: opacity
+// 		&.fading-leave-active
+// 			transition: opacity .3s ease-in
+// 			opacity: 0.1
+// .translate
+// 	&-appear
+// 		transform: translateX(-200%)
+// 		will-change: transform
+// 		&.translate-appear-active
+// 			transition: transform .7s ease-in
+// 			transform: translateX(0)
+// 	&-enter
+// 		transform: translateX(-200%)
+// 		will-change: transform
+// 		&.translate-enter-active
+// 			transition: transform .7s ease-in
+// 			transform: translateX(0)
+// 	&-exit
+
+// 		// margin-top: 4.6875em
+// 		position: absolute
+
+// 		will-change: opacity
+// 		opacity: 1
+// 		&.translate-exit-active
+// 			transition: opacity .3s ease-in
+// 			opacity: 0
+
+a.disableUnderline
+	background-image: none
+
+.disableLinkHover
+	&:hover, &:focus, &:active
+		background-image: none $i
+		color: currentColor $i
+
+.perspective
+	transform-style: preserve-3d;
+	transform: perspective(800px);
+
+.overflowHidden
+	overflow: hidden
+	overflow-y: hidden

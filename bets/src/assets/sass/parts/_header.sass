@@ -1,0 +1,54 @@
+.userButton
+    margin-left: em(32)
+    @include breakpoint($desktop)
+      transform: translateX(-1px)
+
+    &__icon
+      max-width: em(16)
+      margin-top: .025em
+
+    &__balance
+      @include breakpoint($tablet)
+          font-size: $s14
+
+
+.popupList_timezones
+  left: -15%
+  min-width: 100px
+  max-height: 250px
+  max-width: 160px
+  overflow-y: scroll
+  overflow-x: none
+  
+.siteMetaLanguages__list
+  top: calc(100% + #{$s9})
+  left: -50%
+  min-width: em(67.772816512)
+
+#openOrCloseLanguagesButton
+  display: flex
+  min-width: 38px
+  justify-content: space-around
+  
+.userPanel
+
+  @include breakpoint($tablet)
+    max-width: em(250)
+
+  &__balance
+      color: rgba(49, 125, 239, 0.85)
+
+.siteMeta
+  transform: translateY(1px)
+
+  @include breakpoint($tablet)
+      max-width: em(100, 12)
+  @include breakpoint($desktop)
+      max-width: em(146, 12)
+  @include breakpoint($phone-less)
+      max-width: em(120, 12)
+
+.siteMetaLanguages
+
+  @include breakpoint($desktop)
+      transform: translateX(em(-8, 12))

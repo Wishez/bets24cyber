@@ -1,0 +1,55 @@
+<!-- begin footer -->
+<footer id="footer" class="background-color_blueGradient footer color_white">
+    <!-- begin container -->
+    <div class="container relative endlessBottomBorder_white endlessBottomBorder padding-bottom_base padding-bottom_large-phone padding-top_small parent row wrap v-centered">
+        <!-- begin site-navigation -->
+        <site-navigation :logo-colored="false" active-link-color="white" label="Навигация по сайту в нижней части страницы" logo-color-name="white" modifier="footer" navigation-style="white">
+        </site-navigation>
+        <!-- end site-navigation -->
+
+        <!-- begin subscribtionForm -->
+        <!-- <subscribtion-form></subscribtion-form> -->
+        <form class="font-size_12 subscribtionForm parent row nowrap grow h-between margin-top_base-phone margin-bottom_base-phone">
+            <label 
+              class="subscribtionForm__label parent centered margin-left_auto width_fill-phone"
+              for="subscribtion_email">
+              Подписаться на рассылку:
+            </label>
+            <!-- begin controller -->
+            <div class="relative controller parent row nowrap grow margin_centered-phone margin-top_small-phone">
+                <input 
+                    id="subscribtion_email"
+                    v-model.trim="subscribtion_email"
+                    class="round_25 controller__input"
+                    type="email" 
+                    name="subscribtion_email" 
+                    placeholder="Введите ваш e-mail" 
+                    autocomplete="email" 
+                />
+                <base-button 
+                    :action="onSubmit"
+                    type="submit" 
+                    modifier="blue"
+                    class-name="text_upper absolute position_right-base controller__button"
+                >
+                    Отправить
+                </base-button>        
+            </div>
+            <!-- end controller -->
+        </form>
+        <!-- end subscribtionForm -->
+    </div>
+    <!-- end container -->
+
+    <!-- begin container -->
+    <div class="padding-top_base container parent row wrap v-centered">
+        <p class="copyright opacity_half grow text_centered-phone margin-top_zero-phone">
+            ©2017. Все права защищены
+        </p>
+        <footer-games>
+        </footer-games>
+        <!-- end  games-->
+    </div>
+    <!-- end container -->
+</footer>
+<!-- end footer -->

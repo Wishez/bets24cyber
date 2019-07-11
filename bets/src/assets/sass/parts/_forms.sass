@@ -1,0 +1,57 @@
+.input
+	border-radius: 4px
+	border: 1px solid $gray
+	background-color: $white
+	padding: .55rem .5rem
+	margin-bottom: 1.2rem
+	&:not(textarea)
+		margin-top: .5rem
+
+textarea.input
+	margin-top: .8rem
+	height: em(90, 12)
+	min-width: 100%
+	max-width: 100%
+
+
+.formContainer
+  padding: 1.25rem 1.4rem 1.25rem 1.25rem
+
+
+.formButton
+	padding-top: .5rem $i
+    padding-bottom: .5rem $i
+    min-width: 114px
+    
+.inputLabel
+	color: #484f60
+	font-size: em(14, 12)
+	padding-left: .5rem
+	font-weight: 600
+
+input[type=search], textarea
+
+	&:focus
+		outline: none 0
+		    
+input[type=number]::-webkit-inner-spin-button 
+	// -webkit-appearance: none
+	// display: none
+
+[type="radio"]:checked + label
+    background: $buttonGradient
+    color: $white
+
+[type="radio"] + label
+	cursor: pointer
+
+[type="radio"]:focus + label
+	outline: $blue
+
+
+.successBlock
+	padding-bottom: 2.5em
+	
+[type="radio"]:checked + label
+    background: $buttonGradient
+    color: $white

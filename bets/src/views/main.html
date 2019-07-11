@@ -1,0 +1,388 @@
+<!-- main content -->
+<main id="main"
+  ref="main"
+  @on-loaded-main-section="() => {
+   log('main section inited');
+  }">
+
+    <section-container title="Матчи дня">
+        <!-- begin gameSorter -->
+        <div class="grow gameSorter parent row v-centered margin-left_auto">
+            <!-- begin games -->
+            <ul class="grow display_grid h-end v-centered games parent row">
+              <!-- begin gameSorter__button -->
+              <li :class="`game margin-top_zero ${$store.state[matchesModuleId].activeGameId === 'all' ?
+                'grayscale_none' : ''}`" role="presentation">
+                <a aria-label="Выбрать все игры"
+                   href="#"
+                   :class="`unstyledLink gameSorter__button baseChild circle  parent centered ${$store.state[matchesModuleId].activeGameId === 'all' ?
+                     'button_blue' : 'button_gray'}`"
+                   @click.prevent="changeGame('all', matchesModuleId)()"
+               >
+                   <icon name="list-ul" />
+               </a>
+              </li>
+              <li v-for="(game, index) in games"
+                :key="index + 1"
+                :class="{
+                  'game margin-top_zero': true,
+                  'game_active': game.id === $store.state[matchesModuleId].activeGameId || $store.state[matchesModuleId].activeGameId === 'all',
+                  'opacity_half': game.id !== $store.state[matchesModuleId].activeGameId,
+
+              }"
+                role="presentation"
+              >
+                    <!-- Можно использовать ссылку. Но ссылка семантичный элемент, который ведёт пользователя на другую страницу. Если элемент этого не делает, но пользователь с ним взаимодействует, то это кнопка.
+                    Выбирай на свою совесть ಠ_ಠ.  -->
+                     <a :data-id="game.id"
+                        :aria-label="game.label"
+                        class="parent"
+                        href="#"
+                        @click.prevent="changeGame(game.id, matchesModuleId)()"
+                    >
+                        <lazy-image
+                            :src="game.image"
+                            :alt="game.label"
+                            :title="game.label"
+                            relative
+                        />
+                    </a>
+              </li>
+            </ul>
+            <!-- end games -->
+
+        </div>
+        <!-- end gameSorter -->
+
+
+        <!-- begin matchesSlider -->
+        <div class="matchesSlider margin_centered relative">
+            <!-- begin tiny-slider -->
+            <tiny-slider :fixed-width="233" :gutter="29" :loop="false" :mouse-drag="true" :responsive="responsive" controls-container=".sliderControls" items="4">
+                <!-- Инкапсулированный компонент match-info -->
+                <!-- Все данные можно помещать в аттрибуты этого компонента. -->
+                <match-info v-for="(match, index) in $store.state.matches.matches"
+                    :key="index"
+                    :game-id="$store.state.matches.activeGameId"
+                    :game-image="false"
+                    :game-background="false"
+                    :league-name="match.league.name"
+                    :league-stage="match.league.stage"
+                    :left-team-logo="match.leftTeam.logo"
+                    :left-team-name="match.leftTeam.name"
+                    :left-team-ratio="match.leftTeam.ratio"
+                    :match-date="match.match.date"
+                    :right-team-logo="match.rightTeam.logo"
+                    :right-team-name="match.rightTeam.name"
+                    :right-team-ratio="match.rightTeam.ratio"
+                    :last-ratio-values="match.lastRatioValues"
+                    :match-url="match.match.url"
+                ></match-info>
+            </tiny-slider>
+            <!-- end tiny-slider -->
+
+            <!-- begin sliderControls -->
+            <div class="sliderControls absolute width_fill">
+                <!-- begin sliderControls__button  -->
+                <base-button class="sliderControls__button sliderControls__button_previous absolute centered parent circle shadow_white-block" id="previousMatchButton" label="Предыдущие матчи" unstyled="">
+                    <chevron-icon position="left">
+                    </chevron-icon>
+                </base-button>
+                <!-- end sliderControls__button  -->
+
+                <!-- begin sliderControls__button  -->
+                <base-button class="sliderControls__button sliderControls__button_next absolute centered parent circle shadow_white-block" id="nextMatchButton" label="Следующие матчи" unstyled="">
+                    <chevron-icon position="right">
+                    </chevron-icon>
+                </base-button>
+                <!-- end sliderControls__button  -->
+
+            </div>
+            <!-- end sliderControls -->
+        </div>
+        <!-- end matchesSlider -->
+    </section-container>
+    <!-- end matchesSection -->
+
+    <!-- begin betsSection -->
+    <section-container title="Биржа ставок">
+        <!-- begin gameSorter -->
+        <div class="gameSorter parent row v-centered margin-left_auto grow">
+            <!-- begin games -->
+            <ul class="grow display_grid h-end v-centered games parent row">
+                <!-- begin gameSorter__button -->
+                <li :class="`game margin-top_zero ${$store.state[betsModuleId].activeGameId === 'all' ?
+                  'grayscale_none' : ''}`" role="presentation">
+                  <a aria-label="Выбрать все игры"
+                     href="#"
+                     :class="`unstyledLink gameSorter__button baseChild circle  parent centered ${$store.state[betsModuleId].activeGameId === 'all' ?
+                       'button_blue' : 'button_gray'}`"
+                     @click.prevent="changeGame('all', betsModuleId)()"
+                 >
+                     <icon name="list-ul" />
+                 </a>
+                </li>
+                <li v-for="(game, index) in games"
+                    :key="index + 1"
+                    :class="{
+                      'game margin-top_zero': true,
+                      'game_active': game.id === $store.state[betsModuleId].activeGameId || $store.state[betsModuleId].activeGameId === 'all',
+                      'opacity_half': game.id !== $store.state[betsModuleId].activeGameId,
+
+                }">
+                    <a :data-id="game.id"
+                        :aria-label="game.label"
+                        class="parent"
+                        href="#"
+                        tabindex="0"
+                        @click.prevent="changeGame(game.id, betsModuleId)()"
+                    >
+                        <lazy-image
+                            :src="game.image"
+                            :alt="game.label"
+                            :title="game.label"
+                            relative
+                        />
+                    </a>
+              </li>
+              <!-- end game -->
+            </ul>
+            <!-- end games -->
+
+        </div>
+        <!-- end gameSorter -->
+
+        <!-- begin bets -->
+        <div class="width_fill bets margin-top_29 shadow_spread">
+            <!-- begin betsSorter -->
+            <form method="get"
+                class="betsSorter font-size_12"
+                action="#"
+            >
+                <!-- begin sorterSection -->
+                <fieldset class="margin_vertical-base-tablet sorterSection sorterSection_styled sorterSection_zeroVerticalPadding margin_centered-phone">
+                  <legend class="visible-hidden">Сортировка по состоянию матчей</legend>
+                  <!-- begin  stateMatchesSorter -->
+                  <div class="stateMatchesSorter parent h-between height_fill wrap">
+
+                    <input
+                      id="live-bets-input"
+                      v-model="betsSorter.status"
+                      type="radio"
+                      name="betsSorterStatus"
+                      value="liveBets"
+                      @click="sortBets"
+                      disabled
+                    >
+                    <label
+                      id="live-bets-label"
+                      for="live-bets-input"
+                      class="betsSorter__label round_25 relative text_centered"
+                    >
+                      Live ставки
+                    </label>
+                    <input
+                      id="all-input"
+                      v-model="betsSorter.status"
+                      type="radio"
+                      name="betsSorterStatus"
+                      value="all"
+                      @click="sortBets"
+                    >
+                    <label
+                      id="all-label"
+                      for="all-input"
+                      class="betsSorter__label round_25 relative text_centered"
+                    >
+                      Все матчи
+                    </label>
+                    <input
+                      id="results-input"
+                      v-model="betsSorter.status"
+                      type="radio"
+                      name="betsSorterStatus"
+                      value="results"
+                      @click="sortBets"
+                    >
+                    <label
+                      id="results-label"
+                      for="results-input"
+                      class="betsSorter__label round_25 relative text_centered"
+                    >
+                      Результаты
+                    </label>
+                  </div>
+                  <!-- end  stateMatchesSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+
+                <!-- begin sorterSection -->
+                <fieldset class="sorterSection sorterSection_styled margin_vertical-base-tablet margin_centered-phone" >
+                  <legend class="visible-hidden">Дата:</legend>
+                  <!-- begin timeRangeSorter -->
+                  <sorter-date
+                    :default-dates="{
+                      until: betsSorter.untilDate,
+                      since: betsSorter.sinceDate
+                    }"
+                    since-date-name="betsSorterSinceDate"
+                    until-date-name="betsSorterUntilDate"
+                    
+                    @set-since-date="betsSorter.sinceDate = $event;sortBets();"
+                    @set-until-date="betsSorter.untilDate = $event;sortBets();"
+                  ></sorter-date>
+                  <!-- end timeRageSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+
+                <!-- begin sorterSection -->
+                <fieldset class="relative sorterSection sorterSection_styled index_big margin_vertical-base-tablet margin_centered-phone">
+                  <!-- Для настройки типов сортировки можно преедать массив из объектов в атрибут sorter types. Настройки состояния находятся в src/store/bets.  -->
+                  <sorter-types
+                    :is-shown="$store.state.bets.isSorterTypesShown"
+                    :sorter-types="[
+                      {
+                        id: 0,
+                        name: 'Турнир'
+                      },
+                      {
+                        id: 1,
+                        name: 'Левая команда'
+                      },
+                      {
+                        id: 2,
+                        name: 'Правая команда'
+                      }
+                    ]"
+                    :on-choose-sorter-type="switchSorterTypeAndSort"
+                    :switch-display-of-sorter-types="switchSorterTypesState"
+                    :current-sorter-type="$store.state.bets.currentSorterType"
+                    list-label="Список вариантов сортировки матчей"
+                  ></sorter-types>
+                  <!-- end typeSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+
+                <!-- begin sorterSection -->
+                <fieldset class="margin_vertical-base-tablet sorterSection sorterSection_search margin_centered-phone">
+                    <legend
+                        id="searchLabel"
+                        class="visible-hidden"
+                    >
+                        Поиск
+                    </legend>
+                    <!-- begin searchSorter -->
+                    <div class="searchSorter relative height_fill padding-bottom_5 padding-top_5">
+
+                        <label
+                            for="searchSorter"
+                            class="searchSorter__label color_gray font-size_16 absolute position_base"
+                            aria-label="Поиск">
+                          <search-icon />
+                        </label>
+                        <input
+                            id="searchSorter"
+                            v-model="betsSorter.search"
+                            role="search"
+                            placeholder="Поиск"
+                            type="search"
+                            class="searchSorter__input width_fill height_fill"
+                            name="searchSorter"
+                            aria-describedby="searchLabel"
+                            @input="sortWithDelay"
+                        />
+                        <!-- Динамическая сортировка @input="sortWithDelay" -->
+                  </div>
+                  <!-- end searchSorter -->
+                </fieldset>
+                <!-- end sorterSection -->
+            </form>
+            <!-- end betsSorter -->
+
+            <!-- begin bets-table -->
+            <!-- Если убрать атрибут is-bets-shown (необязательный атрибут), то прелоадера не будет - будет пустота. -->
+            <bets-table
+              :is-bets-shown="$store.state.bets.bets.length"
+              ref="betsSorter"
+              :on-change-sorter-settings="(sorterSettings) => {
+                log(sorterSettings);
+              }"
+              @load-matches="() => {
+                const requstMethod = 'POST';
+                const requestUrl = $store.state.bets.choosenMatchUrl;
+                const requestHeaders = {
+                  'X-CSRF-Token': $store.state.csrftoken
+                };
+                const requestParametrs = {
+                  url: requestUrl,
+                  data: {},
+                  method: requstMethod,
+                  headers: requestHeaders
+                };
+
+                // https://github.com/axios/axios
+                // const request =  axios(requestParametrs);
+
+                const request = window.Promise.resolve({
+                  status: 'ok',
+                  data: {
+                      matches: generatedMatches()
+                  }
+
+                });
+
+                // Тестовая задержка.
+                window.setTimeout(() => {
+
+                  request.then((response) => {
+
+                      $store.commit('bets/updateMatches', [
+                          ...response.data.matches
+                      ]);
+
+                  }); // end request
+
+                }, 1500);
+
+              }">
+                <bet-info
+                    v-for="(bet, index) in $store.state.bets.bets"
+                    :key="index"
+                    :left-team-ratio="bet.leftTeam.ratio"
+                    :left-team-name="bet.leftTeam.name"
+                    :left-team-logo="bet.leftTeam.logo"
+                    :left-team-country="bet.leftTeam.country"
+                    :right-team-ratio="bet.rightTeam.ratio"
+                    :right-team-name="bet.rightTeam.name"
+                    :right-team-logo="bet.rightTeam.logo"
+                    :right-team-country="bet.rightTeam.country"
+                    :match-date="bet.match.date"
+                    :league-name="bet.league.name"
+                    :league-logo="bet.league.logo"
+                    :match-url="bet.match.url"
+                    :last-ratio-values="bet.lastRatioValues"
+                    :is-online="bet.match.isOnline"
+                    :is-completed="bet.match.isCompleted"
+                    :match-score="bet.match.score"
+                ></bet-info>
+
+                
+                 <base-button id="load_more" 
+                    :action="() => {
+                      log(betsSorter);
+                    }"
+                    class-name="width_fill round_slight-force font-size_22"
+                    
+                    data-page="<?=$next_page?>">
+                      Показать больше
+                  </base-button>
+                
+
+            </bets-table>
+            <!-- end bets-table -->
+        </div>
+        <!-- end bets -->
+
+    </section-container>
+    <!-- end betsSection -->
+  </main>

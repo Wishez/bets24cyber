@@ -1,0 +1,62 @@
+// @import '../conf/easing'
+.ratio
+    max-width: em(50, 12)
+    position: relative
+    
+    &_info
+        color: $blue
+        font-weight: bold
+        border-color: $blue
+        max-width: em(32, 12)
+        padding: .5em 0.15em
+        border-width: 1px
+        border-style: solid
+        border-radius: 5px
+        transition: background-color 0.2s $standart, color 0.2s $standart
+        
+        &_blue
+            color: $blue
+            border-color: $blue
+
+        &_green
+            color: $green
+            border-color: $green
+
+        &_red
+            color: $red
+            border-color: $red
+    
+    &_arrow
+        transition-timing-function: $standart
+        transition-duration: 200ms
+        position: absolute
+        left: calc(50% - (15px / 2.5))
+        height: 1em
+        width: 1em
+
+        &_up
+            top: -10px
+
+            &Fix
+                bottom:  calc(100% - 1px)
+
+        &_down
+            bottom: -10px
+            transform: rotate(180deg)
+
+            &Fix
+                top: calc(100% - 1px)
+                transform: rotate(180deg)
+
+
+.highlightRatioOnHover
+
+    &:hover, &:focus
+
+        .ratio_info
+            background-color: $blue $i
+            color: $white
+            border-color: $blue
+
+        .ratio_arrow
+            color: $blue

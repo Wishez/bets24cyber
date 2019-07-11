@@ -1,0 +1,265 @@
+#personalRoom 
+  .paginationButtons
+
+      @include breakpoint($tablet-less)
+          min-width: 0
+          min-height: 0
+          
+  .userTransactions
+
+    &Head
+
+      @include breakpoint($tablet-less)
+        grid-row-gap: .25em
+
+    &Body
+
+      @include breakpoint($tablet)
+        grid-auto-rows: 61px
+
+      @include breakpoint($tablet-less)
+        grid-auto-rows: 105px
+
+  .personalRoom
+    background-color: #f4f3f3
+    grid-template-areas: "actions" "payments" "transactions"
+    
+    @include breakpoint($tablet)
+      grid-template-rows: 92px 183.33333333333333333333px 1fr
+
+    @include breakpoint($tablet-less)
+      grid-template-rows: minmax(92px, 120px) minmax(183.33333333333333333333px, 300px) 1fr
+
+  .personalRoomUserPanel
+    min-width: em(247)
+    margin-bottom: 0 
+
+    @include breakpoint($betsTabletLess)
+      min-width: 100%
+      display: grid
+      grid-template-columns: 1fr
+      grid-auto-rows: 85px 70px
+      grid-gap: 0 10px
+      height: auto
+      min-height: 0
+      padding: 2.5em 0 0
+      
+
+    @include breakpoint($phone-less)
+      grid-template-columns: 100%
+
+  .personalRoomNavigationList
+
+    @include breakpoint($betsTabletLess)
+      display: grid
+      grid-template-columns: repeat(auto-fit, minmax(125px, 1fr))
+    @include breakpoint($phone-less)
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr))
+
+  .userInfo
+
+    @include breakpoint($betsDesktop)
+      padding-top: em(55)
+      margin-bottom: em(60)
+
+    @include breakpoint($betsTabletLess)
+      flex-direction: row
+      justify-content: space-around
+      min-width: em(475)
+
+    @include breakpoint($phone-less)
+      display: grid
+      min-width: 0
+      // align-items:  center
+      grid-template-columns: repeat(2, 1fr)
+      grid-template-rows: 50px 20px
+      grid-template-areas: "userAvatar userName" "userAvatar userBalance"
+
+    &__title, &__balance
+      @include breakpoint($betsTabletLess)
+        margin-top: 0
+
+    &__balance
+      grid-area: userBalance
+
+    &__title
+      grid-area: userName
+
+    &Avatar
+      grid-area: userAvatar
+      width: em(83)
+      height: em(83)
+      border: 4px solid $white
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3)
+      
+      &__button
+
+  .userInfoMessages
+    font-size: em(7.5)
+
+    @include breakpoint($betsDesktop)
+      top: em(36, 7.5)
+      right: em(45, 7.5)
+
+    @include breakpoint($betsTabletLess)
+      bottom: 100%
+      left: 17em
+    @include breakpoint($phone-less)
+      left: 12.5em
+
+    &__icon
+      fill: rgb(119, 124, 137)
+
+    &__quantity
+      top: em(-8, 7.5)
+      right: em(-10, 7.5)
+
+    &__quantity, &__icon
+      width: em(20, 7.5)
+      height: em(20, 7.5)
+
+  .transactionsSorterContainer
+
+    @include breakpoint($tablet)
+      padding: 1rem 2.2rem .7rem 
+
+    &__title
+      margin-right: 5rem
+
+  .transactionsSorter
+    font-size: em(9.6)
+
+
+    @include breakpoint($phone)
+      grid-template-columns: repeat(2, minmax(101px, 1fr))
+      grid-template-areas: "transactionsTime transactionsBets" "transactionsType transactionsStatus"
+
+    @include breakpoint($tablet)
+      grid-template-columns: 139px repeat(auto-fit, minmax(101px, 1fr))
+      grid-template-areas: "transactionsTime transactionsBets transactionsType transactionsStatus"
+      grid-column-gap: 25px
+      
+    @include breakpoint($tablet-less)
+      grid-auto-rows: 40px
+      align-items: center
+      grid-gap: .5em 1.5em
+
+    @include breakpoint($phone-less)
+      grid-template-columns: 100%
+
+    & > *
+      max-height: 33px
+      @include breakpoint($tablet-less)
+        min-width: 0
+        max-width: none
+
+  .transactionsTimeRangeSorter
+    grid-area: transactionsTime
+
+  .transactionsBetsSorter
+    grid-area: transactionsBets
+
+  .transactionsStatusSorter
+    grid-area: transactionsStatus
+
+  .transactionsTypeSorter
+    grid-area: transactionsType
+
+  .personalRoomSectionLink
+
+    @include breakpoint($betsTabletLess)
+      margin-top: 0
+      
+    & *
+      transition: background .2s $sharp, color .1s $sharp, border-color .2s $sharp
+
+    &:hover
+
+      .personalRoomSectionLink__button
+        color: $blue
+
+      .personalRoomSectionLink__icon
+        background-color: $blue
+
+    &__label
+
+      @include breakpoint($betsTabletLess)
+        margin-top: .3em
+
+    
+
+    &__button
+      border: 3px solid transparent
+      min-height: em(40, 14)
+
+
+      @include breakpoint($betsDesktop)
+          padding-bottom: 0
+
+      @include breakpoint($betsTabletLess)
+
+      @include breakpoint($betsTabletLess)
+        padding-bottom: .75em
+        flex-direction: column
+
+      @include breakpoint($phone-less)
+        font-size: em(12)
+      &_active
+
+
+        @include breakpoint($betsDesktop)
+          border-left-color: $blue
+          border-bottom-color: transparent
+
+        @include breakpoint($betsTabletLess)
+          border-bottom-color: $blue
+        
+
+    &__icon
+      margin: 0 1.25rem 0 1.6rem
+
+    &:first-of-type
+      .personalRoomSectionLink__button
+        @include breakpoint($phone-less)
+          
+
+  .personalRoomNavigation
+    top: 20%
+
+  .userPaymentActionButtons
+    grid-area: actions
+
+    @include breakpoint($tablet)
+      padding-left: 3em
+
+    &__button
+      min-width: em(129)
+
+      &:not(:last-of-type)
+        margin-right: em(20)
+
+        @include breakpoint($small-phone-less)
+          margin-right: 0
+
+  .userPaymentWays
+    grid-area: payments
+
+    @include breakpoint($tablet)
+      padding-left: 3em
+      padding-bottom: 3.75em 
+
+  .paymentWay
+    min-width: em(92, 12.63)
+    font-size: em(12.63)
+
+    &:not(:first-of-type, :last-of-type)
+      margin-right: 1.5em
+
+    &:first-of-type
+      margin-right: 1em
+
+      .paymentWay__icon
+        margin-bottom: 1em
+    
+  .userTransactions
+    grid-area: transactions

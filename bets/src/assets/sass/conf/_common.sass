@@ -1,0 +1,132 @@
+*,
+*:before,
+*:after
+    box-sizing: inherit
+    margin: 0
+
+html, body
+  min-height: 100%
+  overflow-x: hidden
+  -webkit-overflow-scrolling: touch
+  -ms-overflow-style: scrollbar
+  word-spacing: 1px
+  -ms-text-size-adjust: 100%
+  -webkit-text-size-adjust: 100%
+  -moz-osx-font-smoothing: grayscale
+  -webkit-font-smoothing: antialiased
+  box-sizing: border-box
+  position: relative
+
+body
+  scroll-behavior: smooth
+
+  & *
+    margin: 0
+    padding: 0
+    border: 0
+    text-decoration: none
+    box-sizing: inherit
+
+  font:
+    family: $mainFont
+    size: 16px
+
+  line-height: 1.5
+  word-break: break-word
+  hyphens: auto
+  text-rendering: optimizeLegibility
+  font-kerning: normal
+  font-size-adjust: 100%
+  font-variant-ligatures: common-ligatures contextual
+  font-feauture-settings: "kern", "ling", "clig", "calt"
+  -webkit-hyphenate-before: 2
+  -webkit-hyphenate-after: 3
+  hyphenate-lines: 3
+  background-color: $background
+  color: #333b4e
+
+
+li, dt, th, td, tr
+  margin-top:  0
+
+svg
+  &:focus
+    outline: none
+
+h1
+  font-size: em(34.7)
+  @include breakpoint($xs)
+    // font-size: em(41.8868)
+  @include breakpoint($xxs)
+    font-size: 7.6vw
+
+
+h2
+  font-size: $s22
+
+h3
+  font-size: $s14
+h1, h2, h3, h4, h5, h6
+  font-weight: normal
+  word-break: break-word
+
+li
+  margin-top:  $s18
+ul
+  list-style: none
+
+p, li
+  max-width: 60rem
+
+p
+  margin-top: $s18
+ul
+  list-style: none
+a
+  transition: color .2s ease-in, background.2s ease-in
+  color: $darkGray
+
+
+  &, &:hover, &:focus, &:active
+
+    &:not(.unstyledLink)
+      text-decoration: none
+      background-repeat: repeat-x
+      background-position: bottom
+      background-size: 1px 1px
+
+
+
+button
+  // background-color: transparent
+
+input, textarea
+  @include placehodler-color($gray)
+img, figure
+  max-width: 100%
+  display: block
+
+.layouts
+  position: relative
+  
+  & > *
+    width: 100vw
+
+  display: grid
+
+  @include breakpoint($phone)
+    grid-template-rows: 115px 340px 1fr 177px
+
+  @include breakpoint($tablet)
+    grid-template-rows: 66px 250px 1fr 177px
+
+  @include breakpoint($betsDesktop)
+    grid-template-rows: 66px 225px 1fr 177px
+
+  @include breakpoint($phone-less)
+    grid-template-rows: 172.782984px 360px 1fr 355px
+
+  header
+    
+    @include breakpoint($tablet-less)
+      padding-bottom: 1em

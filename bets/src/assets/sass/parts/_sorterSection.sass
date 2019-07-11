@@ -1,0 +1,22 @@
+.sorterSection
+  @include breakpoint($tablet-less)
+    max-width: 50%
+    min-width: 45%
+    padding: .25em 0
+
+  &_zeroVerticalPadding
+    padding-top: 0
+    padding-bottom: 0
+  // Порядок важен
+  &_search
+    @include breakpoint($tablet-less)
+        min-width: 52%
+    
+  @include breakpoint($phone-less)
+    min-width: 100%
+  
+    min-height: em(37, 12)
+  
+  &_styled
+    border-radius: 25px
+    background-color: #f4f3f3
